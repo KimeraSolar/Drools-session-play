@@ -2,23 +2,42 @@ package multicast.senseup.awareness.situation.domain;
 
 import java.util.Map;
 
+import org.json.JSONObject;
+
+import com.google.gson.JsonObject;
+
 public class FactForm {
     String typeName;
 
-    String JsonString;
+    String jsonString;
     
     Map<String, Object> properties;
 
-    private FactForm(String JSON){
-
+    private FactForm(String jsonString, String typeName, Map<String, Object> properties){
+        this.typeName = typeName;
+        this.jsonString = jsonString;
+        this.properties = properties;
     }
 
-    public static FactForm parseJson(String JSON){
-        return new FactForm(JSON);
+    public static FactForm parseJson(String jsonString){
+
+        // Faz o parser do Json
+        JSONObject obj = new JSONObject(jsonString);
+
+        // Pega as strings do typeName e das properties
+        String typeName = obj.getString("typeName");
+        String propertiesString = obj.getString("properties");
+
+        // Faz o parser das properties
+        Map<String, Object> properties = new JSONObject(propertiesString).toMap();
+
+        // Retorna um novo FactForm
+        return new FactForm(jsonString, typeName, properties);
+
     }
 
     public String getJson(){
-        return this.JsonString;
+        return this.jsonString;
     }
 
     public String getTypeName() {
@@ -35,5 +54,16 @@ public class FactForm {
 
     public void setProperties(Map<String,Object> properties) {
         this.properties = properties;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+            .append("FactType: ")
+            .append(typeName)
+            .append("\nProperties: ")
+            .append(properties.toString());
+        return stringBuilder.toString();
     }
 }

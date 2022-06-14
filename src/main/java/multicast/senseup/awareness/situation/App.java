@@ -40,15 +40,17 @@ public class App
 
         Scanner user_input = new Scanner(System.in);
         String sentence;
+        String[] words;
 
         do {
             System.out.println("Sua ação: ");
             sentence = user_input.nextLine();
-            String[] words = sentence.split(" ");
+            words = sentence.split(" ");
             switch(words[0].toLowerCase()){
                 case "insert":
                     // TODO: insere fato na working memory
                     System.out.println("Escreva o fato a ser inserido em formato Json:");
+                    // Teste: { typeName : "Message", properties : "{ status : 1, message : \"Hello World\" }" }
                     String formString = user_input.nextLine();
                     FactForm factForm = FactForm.parseJson(formString);
                     factInserter.insert(factForm);
@@ -72,7 +74,7 @@ public class App
                     // TODO: salva working memory
                     break;
             }
-        } while (!sentence.toLowerCase().contains("end"));
+        } while (!words[0].toLowerCase().contains("end"));
 
         // Finaliza sessão do Scene
         eng.end();
