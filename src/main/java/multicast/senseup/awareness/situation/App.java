@@ -53,7 +53,7 @@ public class App
                     // Teste: { typeName : "Message", properties : "{ status : 1, message : \"Hello World\" }" }
                     String formString = user_input.nextLine();
                     FactForm factForm = FactForm.parseJson(formString);
-                    factInserter.insert(factForm);
+                    System.out.println(factInserter.insert(factForm));
                     break;
                 case "list":
                     // TODO: lista coisas
