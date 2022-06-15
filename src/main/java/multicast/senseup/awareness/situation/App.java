@@ -59,7 +59,10 @@ public class App
                 case "insert":
                     // TODO: insere fato na working memory
                     System.out.println("Escreva o fato a ser inserido em formato Json:");
-                    // Teste: { typeName : "Message", properties : "{ status : 1, message : \"Hello World\" }" }
+                    /* Testes: 
+                     *  { typeName : "Message", properties : "{ status : 1, message : \"Hello World\" }" }
+                     *  { typeName : "Message", properties : "{ status : 3, message : \"Não vai mudar\" }" } 
+                     */
                     String formString = user_input.nextLine();
                     if(formString.toLowerCase().contains("abort")) break;
                     FactForm factForm = FactForm.parseJson(formString);
