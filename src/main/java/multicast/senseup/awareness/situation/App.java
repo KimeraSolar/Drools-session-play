@@ -57,7 +57,6 @@ public class App
             words = sentence.split(" ");
             switch(words[0].toLowerCase()){
                 case "insert":
-                    // TODO: insere fato na working memory
                     System.out.println("Escreva o fato a ser inserido em formato Json:");
                     /* Testes: 
                      *  { typeName : "Message", properties : "{ status : 1, message : \"Hello World\" }" }
@@ -69,7 +68,6 @@ public class App
                     System.out.println(factInserter.insert(factForm));
                     break;
                 case "find":
-                    // TODO: encontra fatos na working memory
                     System.out.println("Escreva o hashcode do fato a ser procurado:");
                     String hashCode = user_input.nextLine();
                     if(hashCode.toLowerCase().contains("abort")) break;
