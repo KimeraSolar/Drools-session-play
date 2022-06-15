@@ -6,6 +6,7 @@ declare Message
 end
 
 rule "Hello World"
+    dialect "mvel"
     when
         m : Message( status == 1, $message : message )
     then
