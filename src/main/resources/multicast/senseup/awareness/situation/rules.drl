@@ -10,16 +10,6 @@ rule "Hello World"
     when
         m : Message( status == 1, $message : message )
     then
-        System.out.println( $message ); 
         modify ( m ) { message = "Goodbye cruel world",
                        status = 2 };
 end
-
-rule "Good Bye"
-    when
-        Message( status == 2, $message : message )
-    then
-        System.out.println( $message ); 
-end 
-
-
