@@ -10,6 +10,7 @@ import org.kie.api.runtime.KieSession;
 
 import multicast.senseup.awareness.situation.domain.Fact;
 import multicast.senseup.awareness.situation.domain.FactForm;
+import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.scene.util.RuleEngineController;
 import multicast.senseup.awareness.situation.services.factServices.FactFinder;
 import multicast.senseup.awareness.situation.services.factServices.FactInserter;
@@ -19,12 +20,15 @@ import multicast.senseup.awareness.situation.services.factServices.dummies.Dummy
 import multicast.senseup.awareness.situation.services.factServices.dummies.DummyFactsLister;
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactFinderImpl;
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactInserterImpl;
+import multicast.senseup.awareness.situation.services.factServices.implementation.FactsListerImpl;
 
 public class App 
 {
     static final String pkgName = "multicast.senseup.awareness.situation";
     static final String baseName = "rules";
-    static final String sessionName = pkgName + ".session";
+    static final String sessionName = ".session";
+
+    static WorkingMemory workingMemory;
 
     static FactFinder factFinder = new DummyFactFinder();
     static FactInserter factInserter = new DummyFactInserter();
@@ -36,23 +40,22 @@ public class App
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.getKieClasspathContainer();
         KieBase kieBase = kContainer.getKieBase(baseName);
-        KieSession kieSession = kContainer.newKieSession(sessionName);
+        KieSession kieSession = kContainer.newKieSession(pkgName + sessionName);
+        workingMemory = new WorkingMemory(pkgName, baseName, sessionName, kieSession, kieBase);
 
         final RuleEngineController eng = new RuleEngineController(kieSession);
         eng.start();
 
         // Inicializa os serviços:
-        factFinder = new FactFinderImpl(kieSession, kieBase);
-        factInserter = new FactInserterImpl(pkgName, kieBase, kieSession);
+        factFinder = new FactFinderImpl(workingMemory);
+        factInserter = new FactInserterImpl(workingMemory);
+        factsLister = new FactsListerImpl(workingMemory);
 
         Scanner user_input = new Scanner(System.in);
         String sentence;
         String[] words;
-
-
-
         do {
-            System.out.println("Sua ação: ");
+            System.out.println("\nSua ação: ");
             sentence = user_input.nextLine();
             words = sentence.split(" ");
             switch(words[0].toLowerCase()){
@@ -74,7 +77,6 @@ public class App
                     System.out.println(factFinder.find(hashCode));
                     break;
                 case "list":
-                    // TODO: lista coisas
                     System.out.println("Escreva o que você deseja listar:");
                     String toList = user_input.nextLine();
                     if(toList.toLowerCase().contains("abort")) break;
@@ -91,6 +93,10 @@ public class App
                 case "save":
                     System.out.println("Isso ainda não faz D:");
                     // TODO: salva working memory
+                    break;
+                case "load":
+                    System.out.println("Isso ainda não faz D:");
+                    // TODO: recupera a working memory
                     break;
             }
         } while (!words[0].toLowerCase().contains("end"));

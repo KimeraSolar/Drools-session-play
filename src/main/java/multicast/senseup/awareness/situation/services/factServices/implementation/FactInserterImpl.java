@@ -1,71 +1,33 @@
 package multicast.senseup.awareness.situation.services.factServices.implementation;
 
-import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.runtime.KieSession;
 
 import multicast.senseup.awareness.situation.domain.FactForm;
+import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.services.factServices.FactInserter;
+import multicast.senseup.awareness.situation.utils.FactHashGenerator;
 
 public class FactInserterImpl implements FactInserter {
 
-    private KieBase kieBase;
-    private String pkgName;
-    private KieSession kieSession;
-
-    public KieBase getKieBase() {
-        return this.kieBase;
-    }
-
-    public void setKieBase(KieBase kieBase) {
-        this.kieBase = kieBase;
-    }
-
-    public String getPkgName() {
-        return this.pkgName;
-    }
-
-    public void setPkgName(String pkgName) {
-        this.pkgName = pkgName;
-    }
-
-    public KieSession getKieSession() {
-        return this.kieSession;
-    }
-
-    public void setKieSession(KieSession kieSession) {
-        this.kieSession = kieSession;
-    }
+    private WorkingMemory workingMemory;
 
     public FactInserterImpl() {
-        this.kieBase = null;
-        this.kieSession = null;
-        this.pkgName = null;
+        this.workingMemory = null;
     }
 
-    public FactInserterImpl(String pkgName, KieBase kieBase, KieSession kieSession) {
-        this.kieBase = kieBase;
-        this.pkgName = pkgName;
-        this.kieSession = kieSession;
+    public FactInserterImpl(WorkingMemory workingMemory) {
+        this.workingMemory = workingMemory;
     }
 
     @Override
     public String insert(FactForm factForm) {
 
         Object obj;
-        StringBuilder sbHashString = new StringBuilder();
+        
         try {
             obj = instantiateFact(factForm);
-            kieSession.insert(obj);
-
-            sbHashString
-                .append(pkgName)
-                .append(".")
-                .append(factForm.getTypeName())
-                .append("@")
-                .append(obj.hashCode());
-
-            String hashString = sbHashString.toString();
+            workingMemory.getKieSession().insert(obj);
+            String hashString = FactHashGenerator.generateFactHash(workingMemory.getPkgName(), factForm.getTypeName(), obj);
             return hashString;
 
         } catch (Exception e) {
@@ -76,7 +38,7 @@ public class FactInserterImpl implements FactInserter {
     }
 
     private Object instantiateFact(FactForm factForm) throws InstantiationException, IllegalAccessException {
-        FactType factType = kieBase.getFactType(pkgName, factForm.getTypeName());
+        FactType factType = workingMemory.getKieBase().getFactType(workingMemory.getPkgName(), factForm.getTypeName());
         Object obj = factType.newInstance();
 
         factForm.getProperties().forEach((key, value) ->{
