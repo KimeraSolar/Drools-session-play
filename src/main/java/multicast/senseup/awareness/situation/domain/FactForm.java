@@ -4,8 +4,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.google.gson.JsonObject;
-
 public class FactForm {
     String typeName;
 
