@@ -21,6 +21,10 @@ import multicast.senseup.awareness.situation.services.factServices.dummies.Dummy
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactFinderImpl;
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactInserterImpl;
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactsListerImpl;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryLoader;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemorySaver;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemoryLoader;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemorySaver;
 
 public class App 
 {
@@ -33,6 +37,8 @@ public class App
     static FactFinder factFinder = new DummyFactFinder();
     static FactInserter factInserter = new DummyFactInserter();
     static FactsLister factsLister = new DummyFactsLister();
+    static WorkingMemorySaver workingMemorySaver = new DummyWorkingMemorySaver();
+    static WorkingMemoryLoader workingMemoryLoader = new DummyWorkingMemoryLoader();
 
     public static void main( String[] args ){
 
@@ -91,12 +97,12 @@ public class App
                     }
                     break;
                 case "save":
-                    System.out.println("Isso ainda não faz D:");
                     // TODO: salva working memory
+                    workingMemorySaver.save(workingMemory);
                     break;
                 case "load":
-                    System.out.println("Isso ainda não faz D:");
                     // TODO: recupera a working memory
+                    workingMemoryLoader.load();
                     break;
             }
         } while (!words[0].toLowerCase().contains("end"));
