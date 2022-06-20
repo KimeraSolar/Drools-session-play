@@ -65,7 +65,7 @@ public class App
     public static void main( String[] args ){
 
         // Configura e inicializa sessão do Drools
-        workingMemoryBuilder = new WorkingMemoryBuilderImpl();
+        workingMemoryBuilder = new DefaultWorkingMemoryBuilder();
         workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
         workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
 

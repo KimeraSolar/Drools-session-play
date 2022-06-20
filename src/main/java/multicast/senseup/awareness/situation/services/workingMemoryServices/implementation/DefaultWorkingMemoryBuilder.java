@@ -13,7 +13,7 @@ import org.kie.api.runtime.KieContainer;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
 
-public class WorkingMemoryBuilderImpl implements WorkingMemoryBuilder {
+public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
 
     public static class WorkingMemoryConfigurationsImpl implements WorkingMemoryConfigurations{
 
