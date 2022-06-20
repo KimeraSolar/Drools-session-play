@@ -146,7 +146,6 @@ public class WorkingMemoryBuilderImpl implements WorkingMemoryBuilder {
                 .append("        modify ( m ) { message = \"Goodbye cruel world\",\n")
                 .append("                    status = 2 };\n")
                 .append("end\n");
-            System.out.println(sourceBuilder.toString());
             return sourceBuilder.toString();
         }
 

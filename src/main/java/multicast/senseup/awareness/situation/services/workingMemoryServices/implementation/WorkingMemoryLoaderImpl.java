@@ -48,10 +48,7 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
         try{
 
             if(workingMemory != null){
-                if(workingMemory.getKieSession() != null){
-                    workingMemory.getKieSession().dispose();
-                    workingMemory.setKieSession(null);
-                }
+                workingMemory.disposeSession();
                 workingMemory = null;
             }
 

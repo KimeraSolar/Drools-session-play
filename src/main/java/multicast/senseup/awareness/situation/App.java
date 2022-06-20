@@ -44,6 +44,15 @@ public class App
     static WorkingMemoryLoader workingMemoryLoader = new DummyWorkingMemoryLoader();
     static WorkingMemoryBuilder workingMemoryBuilder = new DummyWorkingMemoryBuilder();
 
+    
+
+    public static void setWorkingMemory(WorkingMemory newWorkingMemory){
+        workingMemory = newWorkingMemory;
+        factFinder = new FactFinderImpl(workingMemory);
+        factInserter = new FactInserterImpl(workingMemory);
+        factsLister = new FactsListerImpl(workingMemory);
+    }
+
     public static void main( String[] args ){
 
         // Configura e inicializa sessão do Drools
@@ -53,15 +62,14 @@ public class App
 
         File f = new File(fileName + fileExtension);
         if(f.exists() && !f.isDirectory()) {
-            workingMemory = workingMemoryLoader.load(workingMemory);
+            // Carrega sessão previamente salva
+            setWorkingMemory(workingMemoryLoader.load(workingMemory)); 
         } else {
-            workingMemory = workingMemoryBuilder.build(new WorkingMemoryConfigurationsImpl(pkgName, baseName));
+            // Cria sessão do zero
+            setWorkingMemory(workingMemoryBuilder.build(
+                new WorkingMemoryConfigurationsImpl(pkgName, baseName)
+            ));
         }
-
-        // Inicializa os serviços:
-        factFinder = new FactFinderImpl(workingMemory);
-        factInserter = new FactInserterImpl(workingMemory);
-        factsLister = new FactsListerImpl(workingMemory);
 
         Scanner user_input = new Scanner(System.in);
         String sentence;
@@ -106,16 +114,21 @@ public class App
                     workingMemorySaver.save(workingMemory);
                     break;
                 case "load":
-                    workingMemory = workingMemoryLoader.load(workingMemory);
-                    factFinder = new FactFinderImpl(workingMemory);
-                    factInserter = new FactInserterImpl(workingMemory);
-                    factsLister = new FactsListerImpl(workingMemory);
+                    setWorkingMemory(workingMemoryLoader.load(workingMemory));
+                    break;
+                case "reset":
+                    workingMemory.disposeSession();
+                    setWorkingMemory(workingMemoryBuilder.build(
+                        new WorkingMemoryConfigurationsImpl(pkgName, baseName)
+                    ));
                     break;
             }
             workingMemory.getKieSession().fireAllRules();
         } while (!words[0].toLowerCase().contains("end"));
 
         // Finaliza sessão do Scene
+        workingMemory.disposeSession();
+        setWorkingMemory(null);
 
         // Fecha user_input
         user_input.close();

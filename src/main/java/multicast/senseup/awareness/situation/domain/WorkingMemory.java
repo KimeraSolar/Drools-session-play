@@ -59,7 +59,12 @@ public class WorkingMemory implements Serializable {
         return this.sessionName;
     }
 
-
-
+    public WorkingMemory disposeSession(){
+        if(this.getKieSession() != null){
+            this.getKieSession().dispose();
+            this.setKieSession(null);
+        }
+        return this;
+    }
 
 }
