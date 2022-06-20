@@ -58,7 +58,7 @@ public class FactForm {
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-            .append("FactType: ")
+            .append("Fact Type: ")
             .append(typeName)
             .append("\nProperties: ")
             .append(properties.toString());
