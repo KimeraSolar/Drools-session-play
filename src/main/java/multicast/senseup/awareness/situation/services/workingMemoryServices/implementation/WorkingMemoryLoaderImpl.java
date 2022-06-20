@@ -45,11 +45,15 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
 
     @Override
     public WorkingMemory load(WorkingMemory workingMemory) {
-        
         try{
 
-            workingMemory.getKieSession().dispose();
-            workingMemory = null;
+            if(workingMemory != null){
+                if(workingMemory.getKieSession() != null){
+                    workingMemory.getKieSession().dispose();
+                    workingMemory.setKieSession(null);
+                }
+                workingMemory = null;
+            }
 
             FileInputStream fileOutputStream = new FileInputStream(fileName + fileExtension);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileOutputStream);
