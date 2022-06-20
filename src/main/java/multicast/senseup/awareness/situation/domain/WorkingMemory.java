@@ -1,9 +1,11 @@
 package multicast.senseup.awareness.situation.domain;
 
+import java.io.Serializable;
+
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-public class WorkingMemory {
+public class WorkingMemory implements Serializable {
     public KieSession kieSession;
     public KieBase kieBase;
     

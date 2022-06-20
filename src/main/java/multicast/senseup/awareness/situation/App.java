@@ -1,5 +1,6 @@
 package multicast.senseup.awareness.situation;
 
+import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,7 +12,6 @@ import org.kie.api.runtime.KieSession;
 import multicast.senseup.awareness.situation.domain.Fact;
 import multicast.senseup.awareness.situation.domain.FactForm;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
-import multicast.senseup.awareness.situation.scene.util.RuleEngineController;
 import multicast.senseup.awareness.situation.services.factServices.FactFinder;
 import multicast.senseup.awareness.situation.services.factServices.FactInserter;
 import multicast.senseup.awareness.situation.services.factServices.FactsLister;
@@ -25,12 +25,16 @@ import multicast.senseup.awareness.situation.services.workingMemoryServices.Work
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemorySaver;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemoryLoader;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemorySaver;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemoryLoaderImpl;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemorySaverImpl;
 
 public class App 
 {
     static final String pkgName = "multicast.senseup.awareness.situation";
     static final String baseName = "rules";
     static final String sessionName = ".session";
+    static final String fileName = "workingMemory";
+    static final String fileExtension = ".save";
 
     static WorkingMemory workingMemory;
 
@@ -47,15 +51,19 @@ public class App
         KieContainer kContainer = ks.getKieClasspathContainer();
         KieBase kieBase = kContainer.getKieBase(baseName);
         KieSession kieSession = kContainer.newKieSession(pkgName + sessionName);
-        workingMemory = new WorkingMemory(pkgName, baseName, sessionName, kieSession, kieBase);
-
-        final RuleEngineController eng = new RuleEngineController(kieSession);
-        eng.start();
+        workingMemory = new WorkingMemory(pkgName, baseName, sessionName, kieSession, kieBase);    
 
         // Inicializa os serviços:
         factFinder = new FactFinderImpl(workingMemory);
         factInserter = new FactInserterImpl(workingMemory);
         factsLister = new FactsListerImpl(workingMemory);
+        workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
+        workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
+
+        File f = new File(fileName + fileExtension);
+        if(f.exists() && !f.isDirectory()) { 
+            workingMemory = workingMemoryLoader.load(workingMemory);
+        }
 
         Scanner user_input = new Scanner(System.in);
         String sentence;
@@ -102,13 +110,13 @@ public class App
                     break;
                 case "load":
                     // TODO: recupera a working memory
-                    workingMemoryLoader.load();
+                    workingMemory = workingMemoryLoader.load(workingMemory);
                     break;
             }
+            workingMemory.getKieSession().fireAllRules();
         } while (!words[0].toLowerCase().contains("end"));
 
         // Finaliza sessão do Scene
-        eng.end();
 
         // Fecha user_input
         user_input.close();

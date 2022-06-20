@@ -10,7 +10,7 @@ import multicast.senseup.awareness.situation.services.workingMemoryServices.Work
 public class DummyWorkingMemoryLoader implements WorkingMemoryLoader{
 
     @Override
-    public WorkingMemory load() {
+    public WorkingMemory load(WorkingMemory workingMemory) {
         try{
             FileInputStream fileOutputStream = new FileInputStream("dummyWorkingMemory.save");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileOutputStream);
