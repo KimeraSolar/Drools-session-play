@@ -4,11 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-
 import multicast.senseup.awareness.situation.domain.Fact;
 import multicast.senseup.awareness.situation.domain.FactForm;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
@@ -21,12 +16,16 @@ import multicast.senseup.awareness.situation.services.factServices.dummies.Dummy
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactFinderImpl;
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactInserterImpl;
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactsListerImpl;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryLoader;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemorySaver;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemoryBuilder;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemoryLoader;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemorySaver;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemoryBuilderImpl;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemoryLoaderImpl;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemorySaverImpl;
+import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemoryBuilderImpl.WorkingMemoryConfigurationsImpl;
 
 public class App 
 {
@@ -36,34 +35,33 @@ public class App
     static final String fileName = "workingMemory";
     static final String fileExtension = ".save";
 
-    static WorkingMemory workingMemory;
+    static WorkingMemory workingMemory = null;
 
     static FactFinder factFinder = new DummyFactFinder();
     static FactInserter factInserter = new DummyFactInserter();
     static FactsLister factsLister = new DummyFactsLister();
     static WorkingMemorySaver workingMemorySaver = new DummyWorkingMemorySaver();
     static WorkingMemoryLoader workingMemoryLoader = new DummyWorkingMemoryLoader();
+    static WorkingMemoryBuilder workingMemoryBuilder = new DummyWorkingMemoryBuilder();
 
     public static void main( String[] args ){
 
-        // Configura e inicializa sessão do Scene
-        KieServices ks = KieServices.Factory.get();
-        KieContainer kContainer = ks.getKieClasspathContainer();
-        KieBase kieBase = kContainer.getKieBase(baseName);
-        KieSession kieSession = kContainer.newKieSession(pkgName + sessionName);
-        workingMemory = new WorkingMemory(pkgName, baseName, sessionName, kieSession, kieBase);    
+        // Configura e inicializa sessão do Drools
+        workingMemoryBuilder = new WorkingMemoryBuilderImpl();
+        workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
+        workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
+
+        File f = new File(fileName + fileExtension);
+        if(f.exists() && !f.isDirectory()) {
+            workingMemory = workingMemoryLoader.load(workingMemory);
+        } else {
+            workingMemory = workingMemoryBuilder.build(new WorkingMemoryConfigurationsImpl(pkgName, baseName));
+        }
 
         // Inicializa os serviços:
         factFinder = new FactFinderImpl(workingMemory);
         factInserter = new FactInserterImpl(workingMemory);
         factsLister = new FactsListerImpl(workingMemory);
-        workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
-        workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
-
-        File f = new File(fileName + fileExtension);
-        if(f.exists() && !f.isDirectory()) { 
-            workingMemory = workingMemoryLoader.load(workingMemory);
-        }
 
         Scanner user_input = new Scanner(System.in);
         String sentence;
@@ -105,12 +103,13 @@ public class App
                     }
                     break;
                 case "save":
-                    // TODO: salva working memory
                     workingMemorySaver.save(workingMemory);
                     break;
                 case "load":
-                    // TODO: recupera a working memory
                     workingMemory = workingMemoryLoader.load(workingMemory);
+                    factFinder = new FactFinderImpl(workingMemory);
+                    factInserter = new FactInserterImpl(workingMemory);
+                    factsLister = new FactsListerImpl(workingMemory);
                     break;
             }
             workingMemory.getKieSession().fireAllRules();
