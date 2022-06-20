@@ -32,8 +32,9 @@ public class App
     static final String pkgName = "multicast.senseup.awareness.situation";
     static final String baseName = "rules";
     static final String sessionName = ".session";
-    static final String fileName = "workingMemory";
-    static final String fileExtension = ".save";
+    
+    static String fileName = "workingMemory";
+    static String fileExtension = ".save";
 
     static WorkingMemory workingMemory = null;
 
@@ -51,6 +52,14 @@ public class App
         factFinder = new FactFinderImpl(workingMemory);
         factInserter = new FactInserterImpl(workingMemory);
         factsLister = new FactsListerImpl(workingMemory);
+    }
+
+    public static void getFileName(Scanner user_input){
+
+        fileName = user_input.nextLine();
+        fileExtension = fileName.substring(fileName.indexOf("."));
+        fileName = fileName.substring(0, fileName.indexOf("."));
+
     }
 
     public static void main( String[] args ){
@@ -111,9 +120,15 @@ public class App
                     }
                     break;
                 case "save":
+                    System.out.println("Escreva o nome do arquivo:");
+                    getFileName(user_input);
+                    workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
                     workingMemorySaver.save(workingMemory);
                     break;
                 case "load":
+                    System.out.println("Escreva o nome do arquivo:");
+                    getFileName(user_input);
+                    workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
                     setWorkingMemory(workingMemoryLoader.load(workingMemory));
                     break;
                 case "reset":
