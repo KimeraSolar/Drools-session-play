@@ -38,7 +38,7 @@ public class FactsListerImpl implements FactsLister {
         objects.forEach((obj) ->{
             Class<?> objectType = obj.getClass();
             FactType factType = workingMemory.getKieBase().getFactType(objectType.getPackageName(), objectType.getName());
-            String factHash = FactHashGenerator.generateFactHash(objectType.getPackageName(), objectType.getName(), obj.hashCode());
+            String factHash = FactHashGenerator.generateFactHash(objectType.getPackageName(), objectType.getName().substring(objectType.getName().lastIndexOf(".") + 1), obj.hashCode());
             facts.add(new Fact(factHash, factType, obj));
         });
         return facts;
