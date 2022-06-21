@@ -51,6 +51,13 @@ public class WorkingMemorySaverImpl implements WorkingMemorySaver{
             objectOutputStream.writeObject(workingMemory.getPkgName());
             objectOutputStream.writeObject(workingMemory.getBaseName());
             objectOutputStream.writeObject(workingMemory.getSessionName());
+            objectOutputStream.writeObject(workingMemory.getPom());
+            objectOutputStream.writeObject(workingMemory.getKmodule());
+            objectOutputStream.writeObject(workingMemory.getFiles().size());
+            for(var file : workingMemory.getFiles().entrySet()){
+                objectOutputStream.writeObject(file.getKey());
+                objectOutputStream.writeObject(file.getValue());
+            }
 
             objectOutputStream.writeObject(workingMemory.getKieBase());
             objectOutputStream.writeObject(workingMemory.getKieSession().getSessionConfiguration());

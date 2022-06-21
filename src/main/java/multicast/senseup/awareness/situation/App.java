@@ -24,6 +24,7 @@ import multicast.senseup.awareness.situation.services.packageServices.PackageBui
 import multicast.senseup.awareness.situation.services.packageServices.RulesLister;
 import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyPackageBuilder;
 import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyRulesLister;
+import multicast.senseup.awareness.situation.services.packageServices.implementation.PackageBuilderImpl;
 import multicast.senseup.awareness.situation.services.packageServices.implementation.RulesListerImpl;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryLoader;
@@ -79,6 +80,7 @@ public class App
         workingMemoryBuilder = new DefaultWorkingMemoryBuilder();
         workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
         workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
+        packageBuilder = new PackageBuilderImpl();
 
         File f = new File(fileName + fileExtension);
         if(f.exists() && !f.isDirectory()) {
@@ -117,13 +119,14 @@ public class App
                             break;
                         case "rule":
                         case "rules":
-                            System.out.println("Escreva o nome do novo pacote:");
-                            String packageName = user_input.nextLine();
+                            System.out.println("Escreva o nome do arquivo .drl:");
+                            String DrlFileName = user_input.nextLine();
                             RulePackage rulePackage = new RulePackage();
                             /* Testes:
-                            * anime.songs
+                            * animesongs
                             */
-                            rulePackage.setPkgName(packageName);
+                            rulePackage.setPkgName(workingMemory.getPkgName());
+                            rulePackage.setFileName(DrlFileName);
 
                             /* Testes:
                              * multicast.senseup.awareness.situation.Message
@@ -138,7 +141,7 @@ public class App
                             System.out.println("Escreva as regras a serem inseridas em formato Json: (end-rules para finalizar)");
                             /* Testes: 
                             *  { ruleName : "Ohayo sekai", source : "rule \"Ohayo sekai\"\n dialect \"mvel\" \n when\n m : Message( status == 2, $message : message )\n then\n modify ( m ) { message = \"Ohayo sekai Good morning World\", \n status = 3 }; \n end\n" }
-                            *  { ruleName : "GURU", source: "rule \"Ohayo sekai\"\n dialect \"mvel\" \n when\n m : Message( status == 4, $message : message )\n then\n modify ( m ) { message = \"Ah Wanderer Never Ending\", \n status = 3 }; \n end\n"}
+                            *  { ruleName : "GURU", source: "rule \"GURU\"\n dialect \"mvel\" \n when\n m : Message( status == 4, $message : message )\n then\n modify ( m ) { message = \"Ah Wanderer Never Ending\", \n status = 3 }; \n end\n"}
                             */
                             String jsonString = user_input.nextLine();
                             while(!jsonString.toLowerCase().contains("end-rules")){

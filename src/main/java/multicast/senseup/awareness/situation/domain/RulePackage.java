@@ -13,6 +13,8 @@ public class RulePackage {
 
     String pkgName;
 
+    String fileName;
+
     public Map<String, RuleForm> getRules() {
         return this.rules;
     }
@@ -27,6 +29,14 @@ public class RulePackage {
 
     public void setPkgName(String pkgName) {
         this.pkgName = pkgName;
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName.replace(".", "");
     }
 
     public void addRule(RuleForm ruleForm){
@@ -51,6 +61,30 @@ public class RulePackage {
 
     public void removeInclude(String include){
         this.includes.remove(include);
+    }
+
+    public String getSourceCode(){
+        StringBuilder sourceCodeBuilder = new StringBuilder();
+
+        sourceCodeBuilder
+            .append("package ").append( getPkgName() ).append(";\n")
+            .append("\n");
+        for(String include : getIncludes()){
+            sourceCodeBuilder.append("import ").append(include).append(";\n");
+        }
+        sourceCodeBuilder
+            .append("\n");
+        for(RuleForm ruleForm : getRules().values()){
+            sourceCodeBuilder
+                .append(ruleForm.getSourceCode())
+                .append("\n");
+        }
+
+        return sourceCodeBuilder.toString();
+    }
+
+    public String toString(){
+        return this.getSourceCode();
     }
     
 }

@@ -14,6 +14,8 @@ public class DummyPackageBuilder implements PackageBuilder{
         for(RuleForm rule : rulePackage.getRules().values()){
             System.out.println("\t" + rule.getRuleName());
         }
+        System.out.println("Source Code:");
+        System.out.println(rulePackage.toString());
         return workingMemory;
     }
     

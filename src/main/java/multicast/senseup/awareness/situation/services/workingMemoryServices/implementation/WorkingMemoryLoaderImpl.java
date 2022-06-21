@@ -59,9 +59,19 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
             String pkgName = (String) objectInputStream.readObject();
             String baseName = (String) objectInputStream.readObject();
             String sessionName = (String) objectInputStream.readObject();
+            String pom = (String) objectInputStream.readObject();
+            String kmodule = (String) objectInputStream.readObject();
+            int size = objectInputStream.readInt();
 
             workingMemory = new WorkingMemory(pkgName, baseName, sessionName);
+            for(int i = 0; i < size; i++){
+                String fileName = (String) objectInputStream.readObject();
+                String fileContent = (String) objectInputStream.readObject();
+                workingMemory.addFile(fileName, fileContent);
+            }
 
+            workingMemory.setPom(pom);
+            workingMemory.setKmodule(kmodule);
             workingMemory.setKieBase((KieBase) objectInputStream.readObject());
             
             KieSessionConfiguration kieSessionConfiguration = (KieSessionConfiguration) objectInputStream.readObject();
