@@ -101,6 +101,7 @@ public class WorkingMemory implements Serializable {
 
     public void updateVersion(){
         version += 1;
+        this.getPomForm().setVersion( getVersion() );
     }
 
     public String getVersion(){
