@@ -126,8 +126,12 @@ public class App
                             */
                             String formString = user_input.nextLine();
                             if(formString.toLowerCase().contains("abort")) break;
-                            FactForm factForm = FactForm.parseJson(formString);
-                            System.out.println(factInserter.insert(factForm));
+                            try{
+                                FactForm factForm = FactForm.parseJson(formString);
+                                System.out.println(factInserter.insert(factForm));
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
                             break;
                         case "rule":
                         case "rules":
@@ -154,12 +158,16 @@ public class App
                             /* Testes: 
                             *  { ruleName : "Ohayo sekai", source : "rule \"Ohayo sekai\"\n dialect \"mvel\" \n when\n m : Message( status == 2, $message : message )\n then\n modify ( m ) { message = \"Ohayo sekai Good morning World\", \n status = 3 }; \n end\n" }
                             *  { ruleName : "GURU", source: "rule \"GURU\"\n dialect \"mvel\" \n when\n m : Message( status == 4, $message : message )\n then\n modify ( m ) { message = \"Ah Wanderer Never Ending\", \n status = 3 }; \n end\n"}
-                            *  { ruleName : "Haruka Kanata", source: "rule \"Haruka Kanata\"\n dialect \"mvel\" \n when\n m : Message( status == 1, $message : message )\n then\n modify ( m ) { message = \"fumikomu ze akuseru / kakehiki wa nai sa, sōda yo / yoru o nukeru\", \n status = 3 }; \n end\n"}
+                            *  { ruleName : "Naruto OP 2", source: "rule \"Haruka Kanata\"\n dialect \"mvel\" \n when\n m : Message( status == 1, $message : message )\n then\n modify ( m ) { message = \"fumikomu ze akuseru / kakehiki wa nai sa, sōda yo / yoru o nukeru\", \n status = 3 }; \n end\n"}
                             */
                             String jsonString = user_input.nextLine();
                             while(!jsonString.toLowerCase().contains("end-rules")){
-                                RuleForm ruleForm = RuleForm.parseJson(jsonString);
-                                rulePackage.addRule(ruleForm);
+                                try{
+                                    RuleForm ruleForm = RuleForm.parseJson(jsonString);
+                                    rulePackage.addRule(ruleForm);
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                }
                                 jsonString = user_input.nextLine();
                             }
                             
