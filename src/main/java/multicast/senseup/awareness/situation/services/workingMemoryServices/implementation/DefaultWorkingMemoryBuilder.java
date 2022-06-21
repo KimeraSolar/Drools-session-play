@@ -153,6 +153,7 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
             pomForm.setArtifactiId( getDefaultBaseName() );
             pomForm.setPkgName( getPkgName() );
             pomForm.setName(  getDefaultBaseName() );
+            pomForm.setVersion("1.0.0");
 
             pomForm = setDependencies(pomForm);
             pomForm = setPlugins(pomForm);
