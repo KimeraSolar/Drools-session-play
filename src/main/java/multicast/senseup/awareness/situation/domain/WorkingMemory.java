@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.api.KieBase;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -24,8 +22,6 @@ public class WorkingMemory implements Serializable {
     final String baseName;
     final String sessionName;
 
-    public KieBuilder kieBuilder;
-    public KieFileSystem kieFileSystem;
     public ReleaseId releaseId;
     public KieContainer kieContainer;
 
@@ -45,22 +41,6 @@ public class WorkingMemory implements Serializable {
 
     public void setFiles(Map<String,String> files) {
         this.files = files;
-    }
-
-    public KieBuilder getKieBuilder() {
-        return this.kieBuilder;
-    }
-
-    public void setKieBuilder(KieBuilder kieBuilder) {
-        this.kieBuilder = kieBuilder;
-    }
-
-    public KieFileSystem getKieFileSystem() {
-        return this.kieFileSystem;
-    }
-
-    public void setKieFileSystem(KieFileSystem kieFileSystem) {
-        this.kieFileSystem = kieFileSystem;
     }
 
     public PomForm getPomForm(){

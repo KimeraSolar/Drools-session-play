@@ -1,6 +1,8 @@
 package multicast.senseup.awareness.situation.services.packageServices.implementation;
 
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 
 import multicast.senseup.awareness.situation.domain.RulePackage;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
@@ -25,32 +27,22 @@ public class PackageBuilderImpl implements PackageBuilder{
 
         KieServices kieServices = KieServices.Factory.get();
 
-        //if(workingMemory.getKieFileSystem() == null){
-            workingMemory.setKieFileSystem(kieServices.newKieFileSystem());
+        KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
 
-            workingMemory.addFile(fileName, rulePackage.getSourceCode());
+        workingMemory.addFile(fileName, rulePackage.getSourceCode());
 
-            workingMemory.getKieFileSystem().writePomXML(workingMemory.getPom());
-            workingMemory.getKieFileSystem().writeKModuleXML(workingMemory.getKmodule());
-            for(var file : workingMemory.getFiles().entrySet()){
-                workingMemory.getKieFileSystem().write(file.getKey(), file.getValue());
-            }
+        kieFileSystem.writePomXML(workingMemory.getPom());
+        kieFileSystem.writeKModuleXML(workingMemory.getKmodule());
+        for(var file : workingMemory.getFiles().entrySet()){
+            kieFileSystem.write(file.getKey(), file.getValue());
+        }
 
-            workingMemory.setKieBuilder(kieServices.newKieBuilder(workingMemory.getKieFileSystem()));
-            //workingMemory.setKieContainer(kieServices.newKieContainer(workingMemory.releaseId));
-        //}
+        KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
 
-        workingMemory.getKieBuilder().buildAll();
-
-        System.out.println(workingMemory.getKieBuilder().getKieModule());
-
-        /* workingMemory.setKieContainer(kieServices.newKieContainer());
-
-        workingMemory.setKieBase( workingMemory.getKieContainer().getKieBase());
-        workingMemory.setKieSession( workingMemory.getKieBase().newKieSession()) */;
+        kieBuilder.buildAll();
         
-        workingMemory.setReleaseId(workingMemory.getKieBuilder().getKieModule().getReleaseId());
-        workingMemory.getKieContainer().updateToVersion(workingMemory.getKieBuilder().getKieModule().getReleaseId());
+        workingMemory.setReleaseId(kieBuilder.getKieModule().getReleaseId());
+        workingMemory.getKieContainer().updateToVersion(kieBuilder.getKieModule().getReleaseId());
         
         return workingMemory;
     }

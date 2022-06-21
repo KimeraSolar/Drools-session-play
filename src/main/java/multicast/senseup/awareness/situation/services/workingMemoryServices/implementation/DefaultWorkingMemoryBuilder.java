@@ -249,8 +249,6 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
         workingMemory.setKieSession(kieContainer.newKieSession());
         workingMemory.setKieBase(workingMemory.getKieSession().getKieBase());
 
-        workingMemory.setKieBuilder(kieBuilder);
-        workingMemory.setKieFileSystem(kieFileSystem);
         workingMemory.setKieContainer(kieContainer);
         workingMemory.setReleaseId(kieModule.getReleaseId());
         workingMemory.setPom(configurations.getPom());
