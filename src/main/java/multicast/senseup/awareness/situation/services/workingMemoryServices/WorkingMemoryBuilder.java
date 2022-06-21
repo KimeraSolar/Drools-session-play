@@ -1,10 +1,11 @@
 package multicast.senseup.awareness.situation.services.workingMemoryServices;
 
+import multicast.senseup.awareness.situation.domain.PomForm;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 
 public interface WorkingMemoryBuilder {
     public interface WorkingMemoryConfigurations{
-        public String getPom();
+        public PomForm getPom();
 
         public String getSourceCode();
 

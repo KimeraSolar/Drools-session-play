@@ -15,10 +15,10 @@ public class WorkingMemory implements Serializable {
     public KieSession kieSession;
     public KieBase kieBase;
 
-    private Map<String, String> files = new HashMap<>();
-    private String pom;
-    private String kmodule;
-    private int version;
+    public Map<String, String> files = new HashMap<>();
+    public PomForm pom;
+    public String kmodule;
+    public int version;
 
     final String pkgName;
     final String baseName;
@@ -63,11 +63,15 @@ public class WorkingMemory implements Serializable {
         this.kieFileSystem = kieFileSystem;
     }
 
-    public String getPom() {
+    public PomForm getPomForm(){
         return this.pom;
     }
 
-    public void setPom(String pom) {
+    public String getPom() {
+        return this.pom.toString();
+    }
+
+    public void setPom(PomForm pom) {
         this.pom = pom;
     }
 

@@ -10,6 +10,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 
+import multicast.senseup.awareness.situation.domain.PomForm;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
 
@@ -50,81 +51,114 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
             return pkgName + ".session";
         }
 
+        public PomForm setPlugins(PomForm pomForm){
+            pomForm.addPlugin(
+                "org.apache.maven.compiler.plugin", 
+                "\t\t\t\t<plugin>\n" +
+                "\t\t\t\t\t<groupId>org.apache.maven.plugins</groupId>\n" +
+                "\t\t\t\t\t<artifactId>maven-compiler-plugin</artifactId>\n" +
+                "\t\t\t\t\t<version>3.8.1</version>\n" +
+                "\t\t\t\t</plugin>\n"
+            );
+
+            return pomForm;
+        }
+
+        public PomForm setProperties(PomForm pomForm){
+            pomForm.addProperty("maven.compiler.release", 
+            "\t\t<maven.compiler.release>11</maven.compiler.release>");
+
+            return pomForm;
+        }
+
+        public PomForm setDependencies(PomForm pomForm){
+            pomForm.addDependency(
+                "org.kie.api",
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.kie</groupId>\n" + 
+                "\t\t\t<artifactId>kie-api</artifactId>\n" +
+                "\t\t\t<version>7.63.0.Final</version>\n" +
+                "\t\t</dependency>\n"
+            );
+
+            pomForm.addDependency(
+                "org.drools.core", 
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.drools</groupId>\n" + 
+                "\t\t\t<artifactId>drools-core</artifactId>\n" +
+                "\t\t\t<version>7.63.0.Final</version>\n" +
+                "\t\t</dependency>\n"
+            );
+            
+            pomForm.addDependency(
+                "org.drools.compiler", 
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.drools</groupId>\n" + 
+                "\t\t\t<artifactId>drools-compiler</artifactId>\n" +
+                "\t\t\t<version>7.63.0.Final</version>\n" +
+                "\t\t</dependency>\n"
+            );
+            
+            pomForm.addDependency(
+                "org.drools.mvel", 
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.drools</groupId>\n" + 
+                "\t\t\t<artifactId>drools-mvel</artifactId>\n" +
+                "\t\t\t<version>7.63.0.Final</version>\n" +
+                "\t\t</dependency>\n"
+            );
+            
+            pomForm.addDependency(
+                "org.drools.persistence", 
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.drools</groupId>\n" + 
+                "\t\t\t<artifactId>drools-persistence-jpa</artifactId>\n" +
+                "\t\t\t<version>7.63.0.Final</version>\n" +
+                "\t\t</dependency>\n"
+            );
+            
+            pomForm.addDependency(
+                "org.kie.ci", 
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.kie</groupId>\n" + 
+                "\t\t\t<artifactId>kie-ci</artifactId>\n" +
+                "\t\t\t<version>7.63.0.Final</version>\n" +
+                "\t\t</dependency>\n"
+            );
+            
+            pomForm.addDependency(
+                "org.slf4j", 
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.slf4j</groupId>\n" + 
+                "\t\t\t<artifactId>slf4j-simple</artifactId>\n" +
+                "\t\t\t<version>1.7.21</version>\n" +
+                "\t\t</dependency>\n"
+            );
+            
+            pomForm.addDependency(
+                "org.json", 
+                "\t\t<dependency>\n" + 
+                "\t\t\t<groupId>org.json</groupId>\n" + 
+                "\t\t\t<artifactId>json</artifactId>\n" +
+                "\t\t\t<version>20220320</version>\n" +
+                "\t\t</dependency>\n"
+            );
+
+            return pomForm;
+        }
+
         @Override
-        public String getPom() {
-            StringBuilder pomBuilder = new StringBuilder();
-            pomBuilder
-                .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                .append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n")
-                .append("         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n")
-                .append("         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n")
-                .append("    <modelVersion>4.0.0</modelVersion>\n")
-                .append("\n")
-                .append("    <groupId>" + getPkgName() + "</groupId>\n")
-                .append("    <artifactId>" + getDefaultBaseName() + "</artifactId>\n")
-                .append("    <version>1.0-SNAPSHOT</version>\n")
-                .append("    <name>" + getDefaultBaseName() + "</name>\n")
-                .append("\n")
-                .append("    <!-- Configure Java 11-->\n")
-                .append("    <properties>\n")
-                .append("        <maven.compiler.release>11</maven.compiler.release>\n")
-                .append("    </properties>\n")
-                .append("\n")
-                .append("    <!-- By default your version of Maven might use an old version of the maven-compiler-plugin that is not compatible with Java 9 or later versions. To target Java 9 or later, you should at least use version 3.6.0 of the maven-compiler-plugin -->\n")
-                .append("    <build>\n")
-                .append("        <pluginManagement>\n")
-                .append("            <plugins>\n")
-                .append("                <plugin>\n")
-                .append("                    <groupId>org.apache.maven.plugins</groupId>\n")
-                .append("                    <artifactId>maven-compiler-plugin</artifactId>\n")
-                .append("                    <version>3.8.1</version>\n")
-                .append("                </plugin>\n")
-                .append("            </plugins>\n")
-                .append("        </pluginManagement>\n")
-                .append("    </build>\n")
-                .append("\n")
-                .append("    <dependencies>\n")
-                .append("\n")
-                .append("        <dependency>\n")
-                .append("            <groupId>org.kie</groupId>\n")
-                .append("            <artifactId>kie-api</artifactId>\n")
-                .append("            <version>7.63.0.Final</version>\n")
-                .append("        </dependency>\n")
-                .append("\n")
-                .append("        <dependency>\n")
-                .append("            <groupId>org.drools</groupId>\n")
-                .append("            <artifactId>drools-core</artifactId>\n")
-                .append("            <version>7.63.0.Final</version>\n")
-                .append("        </dependency>\n")
-                .append("\n")
-                .append("        <dependency>\n")
-                .append("            <groupId>org.drools</groupId>\n")
-                .append("            <artifactId>drools-compiler</artifactId>\n")
-                .append("            <version>7.63.0.Final</version>\n")
-                .append("        </dependency>\n")
-                .append("\n")
-                .append("        <dependency>\n")
-                .append("            <groupId>org.drools</groupId>\n")
-                .append("            <artifactId>drools-mvel</artifactId>\n")
-                .append("            <version>7.63.0.Final</version>\n")
-                .append("        </dependency>\n")
-                .append("\n")
-                .append("        <dependency>\n")
-                .append("            <groupId>org.kie</groupId>\n")
-                .append("            <artifactId>kie-ci</artifactId>\n")
-                .append("            <version>7.63.0.Final</version>\n")
-                .append("        </dependency>\n")
-                .append("\n")
-                .append("        <dependency>\n")
-                .append("            <groupId>org.slf4j</groupId>\n")
-                .append("            <artifactId>slf4j-simple</artifactId>\n")
-                .append("            <version>1.7.21</version>\n")
-                .append("          </dependency>\n")
-                .append("        \n")
-                .append("    </dependencies>\n")
-                .append("\n")
-                .append("</project>");
-            return pomBuilder.toString();
+        public PomForm getPom() {
+            PomForm pomForm = new PomForm();
+            pomForm.setArtifactiId( getDefaultBaseName() );
+            pomForm.setPkgName( getPkgName() );
+            pomForm.setName(  getDefaultBaseName() );
+
+            pomForm = setDependencies(pomForm);
+            pomForm = setPlugins(pomForm);
+            pomForm = setProperties(pomForm);
+            
+            return pomForm;
         }
 
         @Override
@@ -203,7 +237,7 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
         
         kieFileSystem = kieFileSystem.write(fileName, configurations.getSourceCode());
         kieFileSystem = kieFileSystem.writeKModuleXML(configurations.getConfigurations());
-        kieFileSystem = kieFileSystem.writePomXML(configurations.getPom());
+        kieFileSystem = kieFileSystem.writePomXML(configurations.getPom().toString());
 
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
         kieBuilder.buildAll();
