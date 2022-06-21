@@ -110,7 +110,8 @@ public class App
                             System.out.println("Escreva o fato a ser inserido em formato Json:");
                             /* Testes: 
                             *  { typeName : "Message", properties : "{ status : 1, message : \"Hello World\" }" }
-                            *  { typeName : "Message", properties : "{ status : 3, message : \"Não vai mudar\" }" } 
+                            *  { typeName : "Message", properties : "{ status : 3, message : \"Não vai mudar\" }" }
+                            *  { typeName : "Message", properties : "{ status : 4, message : \"Hello World\" }" } 
                             */
                             String formString = user_input.nextLine();
                             if(formString.toLowerCase().contains("abort")) break;

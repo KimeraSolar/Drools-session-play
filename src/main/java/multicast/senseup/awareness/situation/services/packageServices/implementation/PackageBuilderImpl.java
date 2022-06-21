@@ -20,11 +20,16 @@ public class PackageBuilderImpl implements PackageBuilder{
             .append(".drl");
         String fileName = fileNameBuilder.toString();
         System.out.println(fileName);
+        
+        workingMemory.updateVersion();
 
         KieServices kieServices = KieServices.Factory.get();
 
-        if(workingMemory.getKieFileSystem() == null){
+        //if(workingMemory.getKieFileSystem() == null){
             workingMemory.setKieFileSystem(kieServices.newKieFileSystem());
+
+            workingMemory.addFile(fileName, rulePackage.getSourceCode());
+
             workingMemory.getKieFileSystem().writePomXML(workingMemory.getPom());
             workingMemory.getKieFileSystem().writeKModuleXML(workingMemory.getKmodule());
             for(var file : workingMemory.getFiles().entrySet()){
@@ -32,16 +37,21 @@ public class PackageBuilderImpl implements PackageBuilder{
             }
 
             workingMemory.setKieBuilder(kieServices.newKieBuilder(workingMemory.getKieFileSystem()));
-            workingMemory.setKieContainer(kieServices.newKieContainer(workingMemory.releaseId));
-        }
+            //workingMemory.setKieContainer(kieServices.newKieContainer(workingMemory.releaseId));
+        //}
 
-        workingMemory.getKieFileSystem().write(fileName, rulePackage.getSourceCode());
         workingMemory.getKieBuilder().buildAll();
 
-        workingMemory.updateVersion();
-        workingMemory.getKieContainer().updateToVersion(kieServices.newReleaseId(workingMemory.getPkgName(), workingMemory.getBaseName().replace(".", "-"), workingMemory.getVersion()));
+        System.out.println(workingMemory.getKieBuilder().getKieModule());
+
+        /* workingMemory.setKieContainer(kieServices.newKieContainer());
+
+        workingMemory.setKieBase( workingMemory.getKieContainer().getKieBase());
+        workingMemory.setKieSession( workingMemory.getKieBase().newKieSession()) */;
         
-        workingMemory.addFile(fileName, rulePackage.getSourceCode());
+        workingMemory.setReleaseId(workingMemory.getKieBuilder().getKieModule().getReleaseId());
+        workingMemory.getKieContainer().updateToVersion(workingMemory.getKieBuilder().getKieModule().getReleaseId());
+        
         return workingMemory;
     }
     
