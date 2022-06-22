@@ -13,6 +13,8 @@ public class RuleDeleterImpl implements RuleDeleter{
 
     @Override
     public void delete(String pkgName, String ruleName) {
+        // TODO: retirar a regra do arquivo e não da base (issue #1)
+        // https://github.com/KimeraSolar/Drools-session-play/issues/1
         workingMemory.getKieBase().removeRule(pkgName, ruleName);
     }
     
