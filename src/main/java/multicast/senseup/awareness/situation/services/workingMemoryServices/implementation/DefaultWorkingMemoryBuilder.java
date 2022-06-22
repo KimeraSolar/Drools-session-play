@@ -5,16 +5,15 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 
+import multicast.senseup.awareness.situation.domain.BaseModelForm;
 import multicast.senseup.awareness.situation.domain.KmoduleForm;
 import multicast.senseup.awareness.situation.domain.PomForm;
 import multicast.senseup.awareness.situation.domain.RuleForm;
 import multicast.senseup.awareness.situation.domain.RulePackage;
+import multicast.senseup.awareness.situation.domain.SessionModelForm;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
 
@@ -207,17 +206,19 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
         @Override
         public KmoduleForm getConfigurations() {
             KmoduleForm kieKmoduleForm = new KmoduleForm();
-            KieServices kieServices = KieServices.Factory.get();
-            KieModuleModel kieModule = kieServices.newKieModuleModel();
-            
-            KieBaseModel defaultBase = kieModule.newKieBaseModel(getDefaultBaseName());
-            defaultBase = defaultBase.setDefault(true);
-            defaultBase = defaultBase.addPackage(getPkgName());
-            defaultBase = defaultBase.setEventProcessingMode(EventProcessingOption.STREAM);
-            
-            KieSessionModel sessionModel = defaultBase.newKieSessionModel(getDefaultSessionName());
-            sessionModel = sessionModel.setDefault(true);
 
+            BaseModelForm defaultBase = new BaseModelForm();
+            defaultBase.setBaseName( getDefaultBaseName() );
+            defaultBase.addPackage( getPkgName() );
+            defaultBase.setDefaultBase(true);
+            defaultBase.setEventMode(EventProcessingOption.STREAM);
+
+            SessionModelForm defaultSession = new SessionModelForm();
+            defaultSession.setDefaultSession(true);
+            defaultSession.setSessionName( getDefaultSessionName() );
+            
+            defaultBase.addSession(defaultSession);
+            kieKmoduleForm.addBaseModel(defaultBase);
             return kieKmoduleForm;
         }
 

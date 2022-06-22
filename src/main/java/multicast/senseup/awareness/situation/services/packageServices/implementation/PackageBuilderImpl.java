@@ -22,12 +22,18 @@ public class PackageBuilderImpl implements PackageBuilder{
             .append(".drl");
         String fileName = fileNameBuilder.toString();
         System.out.println(fileName);
+
+        workingMemory.addPackage(rulePackage.getPkgName());
         
         workingMemory.updateVersion();
 
         KieServices kieServices = KieServices.Factory.get();
 
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
+
+        if(workingMemory.getFiles().containsKey(fileName)){
+            workingMemory.getFiles().remove(fileName);
+        }
 
         workingMemory.addFile(fileName, rulePackage.getSourceCode());
 

@@ -138,11 +138,18 @@ public class App
                             System.out.println("Escreva o nome do arquivo .drl:");
                             String DrlFileName = user_input.nextLine();
                             RulePackage rulePackage = new RulePackage();
+                            rulePackage.setFileName(DrlFileName);
                             /* Testes:
                             * animesongs
                             */
-                            rulePackage.setPkgName(workingMemory.getPkgName());
-                            rulePackage.setFileName(DrlFileName);
+
+                            System.out.println("Escreva o nome completo do pacote");
+
+                            /* Testes:
+                             * anime.songs
+                             */
+                            String pkgName = user_input.nextLine();
+                            rulePackage.setPkgName(pkgName);
 
                             /* Testes:
                              * multicast.senseup.awareness.situation.Message
@@ -196,10 +203,13 @@ public class App
                             break;
                         case "rule":
                         case "rules":
+                            System.out.println("Escreva o pacote da regra a ser removida");
+                            String rulePkg = user_input.nextLine();
+                            if(rulePkg.toLowerCase().contains("abort")) break;
                             System.out.println("Escreva a regra a ser removida");
                             String ruleToDelete = user_input.nextLine();
                             if(ruleToDelete.toLowerCase().contains("abort")) break;
-                            ruleDeleter.delete(ruleToDelete);
+                            ruleDeleter.delete(rulePkg, ruleToDelete);
                             break;
                     }
                     break;

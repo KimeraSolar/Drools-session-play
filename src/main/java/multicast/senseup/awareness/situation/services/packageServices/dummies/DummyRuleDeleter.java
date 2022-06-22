@@ -5,7 +5,7 @@ import multicast.senseup.awareness.situation.services.packageServices.RuleDelete
 public class DummyRuleDeleter implements RuleDeleter{
 
     @Override
-    public void delete(String ruleName) {
+    public void delete(String rulePkg, String ruleName) {
         System.out.println("Deleta regra: " + ruleName);
         
     }

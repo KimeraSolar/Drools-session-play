@@ -1,6 +1,7 @@
 package multicast.senseup.awareness.situation.services.packageServices.implementation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.kie.api.definition.KiePackage;
@@ -19,11 +20,14 @@ public class RulesListerImpl implements RulesLister {
 
     @Override
     public List<Rule> list() {
-        KiePackage kiePackage = workingMemory.getKieBase().getKiePackage(workingMemory.getPkgName());
-        
+
         List<Rule> rules = new ArrayList<>();
-        for(Rule rule : kiePackage.getRules()){
-            rules.add(rule);
+        Collection<KiePackage> packages = workingMemory.getKieBase().getKiePackages();
+        for(var pkg : packages){
+            System.out.println("Pacote: " + pkg.getName());
+            for(Rule rule : pkg.getRules()){
+                rules.add(rule);
+            }
         }
         return rules;
     }

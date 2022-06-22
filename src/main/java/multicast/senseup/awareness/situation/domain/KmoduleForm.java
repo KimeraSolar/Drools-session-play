@@ -27,6 +27,13 @@ public class KmoduleForm implements Serializable{
         this.baseModels.remove(baseModel);
     }
 
+    public BaseModelForm getBaseModel(String modelName){
+        for(var base : this.baseModels){
+            if(base.getBaseName() == modelName) return base;
+        }
+        return null;
+    }
+
     public String getKmodule(){
         KieServices kieServices = KieServices.Factory.get();
         KieModuleModel kieModuleModel = kieServices.newKieModuleModel();

@@ -12,8 +12,8 @@ public class RuleDeleterImpl implements RuleDeleter{
     }
 
     @Override
-    public void delete(String ruleName) {
-        workingMemory.getKieBase().removeRule(workingMemory.getPkgName(), ruleName);
+    public void delete(String pkgName, String ruleName) {
+        workingMemory.getKieBase().removeRule(pkgName, ruleName);
     }
     
 }

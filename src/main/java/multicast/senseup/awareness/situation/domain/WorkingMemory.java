@@ -50,16 +50,19 @@ public class WorkingMemory implements Serializable {
         return this.packages;
     }
 
-    public void setPackages(List<String> packages) {
-        this.packages = packages;
-    }
-
     public void addPackage(String pkgName){
+        if(this.packages.contains(pkgName)) return;
         this.packages.add(pkgName);
+        BaseModelForm baseModel = this.kmodule.getBaseModel(baseName);
+        this.kmodule.removeBaseModel(baseModel);
+        baseModel.addPackage(pkgName);
+        this.kmodule.addBaseModel(baseModel);
     }
 
     public void removePackage(String pkgName){
         this.packages.remove(pkgName);
+        BaseModelForm baseModel = this.kmodule.getBaseModel(baseName);
+        baseModel.removePackage(pkgName);
     }
 
     private void setVersion(int version) {
