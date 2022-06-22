@@ -243,7 +243,7 @@ public class App
                     break;
 
                 case "reset":
-                    workingMemory.disposeSession();
+                    if(workingMemory != null) workingMemory.disposeSession();
                     setWorkingMemory(workingMemoryBuilder.build(
                         new WorkingMemoryConfigurationsImpl(pkgName, baseName)
                     ));
