@@ -2,7 +2,10 @@ package multicast.senseup.awareness.situation.services.workingMemoryServices.imp
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.Collection;
 import java.util.Date;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -10,6 +13,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -82,7 +86,7 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
             workingMemory.setReleaseId(releaseId);
             workingMemory.setPom(pom);
             workingMemory.setKmodule(kmodule);
-            workingMemory.setKieBase((KieBase) objectInputStream.readObject());
+            KieBase kieBase = (KieBase) objectInputStream.readObject();
             
             KieServices kieServices = KieServices.Factory.get();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
@@ -102,6 +106,60 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
             workingMemory.setKieContainer(kieContainer);
 
             workingMemory.setKieBase(kieContainer.getKieBase());
+
+            // Configura a nova KieBase para ser o mais fiel possivel à carregada do save
+            Collection<KiePackage> oldPackages = kieBase.getKiePackages();
+            Collection<String> oldPackagesNames = oldPackages.stream().map(p -> p.getName()).collect(Collectors.toCollection(TreeSet::new)); // Queremos apenas esses pacotes dentro da nova base
+
+            Collection<KiePackage> newPackages = workingMemory.getKieBase().getKiePackages();
+            Collection<String> newPackagesNames = newPackages.stream().map(p -> p.getName()).collect(Collectors.toCollection(TreeSet::new));
+
+            for(var pkg : newPackagesNames){
+
+                // Se o pacote não existir na KieBase referencia, remove da nova, se não testa as regras do pacote
+                if (!oldPackagesNames.contains(pkg)){
+                    workingMemory.getKieBase().removeKiePackage(pkg);
+                } else {
+                    KiePackage originalPkg = kieBase.getKiePackage(pkg);
+                    Collection<String> oldRules = originalPkg.getRules().stream().map(r -> r.getName()).collect(Collectors.toCollection(TreeSet::new)); // Queremos apenas essas regras dentro do novo pacote
+
+                    KiePackage newPackage = workingMemory.getKieBase().getKiePackage(pkg);
+                    Collection<String> newRules = newPackage.getRules().stream().map(r -> r.getName()).collect(Collectors.toCollection(TreeSet::new));
+
+                    // Se a regra não existir no KiePackage referencia, remove do novo
+                    for(var newRule : newRules){
+    
+                        if(!oldRules.contains(newRule)){
+                            workingMemory.getKieBase().removeRule(pkg, newRule);
+                        }
+                    }
+
+                    Collection<String> oldQueries = originalPkg.getQueries().stream().map(r -> r.getName()).collect(Collectors.toCollection(TreeSet::new));
+
+                    Collection<String> newQueries = newPackage.getQueries().stream().map(r -> r.getName()).collect(Collectors.toCollection(TreeSet::new));
+
+                    // Se a query não existir no KiePackage referencia, remove do novo
+                    for(var newQuery : newQueries){
+    
+                        if(!oldQueries.contains(newQuery)){
+                            workingMemory.getKieBase().removeQuery(pkg, newQuery);
+                        }
+                    }
+
+                    Collection<String> oldFunctions = originalPkg.getFunctionNames();
+
+                    Collection<String> newFunctions = newPackage.getFunctionNames();
+
+                    // Se a function não existir no KiePackage referencia, remove do novo
+                    for(var newFunction : newFunctions){
+    
+                        if(!oldFunctions.contains(newFunction)){
+                            workingMemory.getKieBase().removeFunction(pkg, newFunction);
+                        }
+                    }
+                }
+            }
+
             KieSession kieSession = workingMemory.getKieBase().newKieSession();
             
             @SuppressWarnings("unused")
