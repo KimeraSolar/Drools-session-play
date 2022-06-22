@@ -1,7 +1,9 @@
 package multicast.senseup.awareness.situation.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.api.KieBase;
@@ -14,8 +16,9 @@ public class WorkingMemory implements Serializable {
     public KieBase kieBase;
 
     public Map<String, String> files = new HashMap<>();
+    public List<String> packages = new ArrayList<>();
     public PomForm pom;
-    public String kmodule;
+    public KmoduleForm kmodule;
     public int version;
 
     final String pkgName;
@@ -43,6 +46,27 @@ public class WorkingMemory implements Serializable {
         this.files = files;
     }
 
+    public List<String> getPackages() {
+        return this.packages;
+    }
+
+    public void setPackages(List<String> packages) {
+        this.packages = packages;
+    }
+
+    public void addPackage(String pkgName){
+        this.packages.add(pkgName);
+    }
+
+    public void removePackage(String pkgName){
+        this.packages.remove(pkgName);
+    }
+
+    private void setVersion(int version) {
+        this.version = version;
+        this.getPomForm().setVersion( getVersion() );
+    }
+
     public PomForm getPomForm(){
         return this.pom;
     }
@@ -56,10 +80,14 @@ public class WorkingMemory implements Serializable {
     }
 
     public String getKmodule() {
+        return this.kmodule.toString();
+    }
+
+    public KmoduleForm getKmoduleForm(){
         return this.kmodule;
     }
 
-    public void setKmodule(String kmodule) {
+    public void setKmodule(KmoduleForm kmodule) {
         this.kmodule = kmodule;
     }
 
@@ -80,8 +108,7 @@ public class WorkingMemory implements Serializable {
     }
 
     public void updateVersion(){
-        version += 1;
-        this.getPomForm().setVersion( getVersion() );
+        this.setVersion(version + 1);
     }
 
     public String getVersion(){

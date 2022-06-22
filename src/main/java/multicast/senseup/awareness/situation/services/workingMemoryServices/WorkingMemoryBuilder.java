@@ -1,5 +1,6 @@
 package multicast.senseup.awareness.situation.services.workingMemoryServices;
 
+import multicast.senseup.awareness.situation.domain.KmoduleForm;
 import multicast.senseup.awareness.situation.domain.PomForm;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 
@@ -9,7 +10,7 @@ public interface WorkingMemoryBuilder {
 
         public String getSourceCode();
 
-        public String getConfigurations();
+        public KmoduleForm getConfigurations();
 
         public String getPkgName();
 

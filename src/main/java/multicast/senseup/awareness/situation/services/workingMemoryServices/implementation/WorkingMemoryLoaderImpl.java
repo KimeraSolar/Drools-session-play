@@ -19,6 +19,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.marshalling.MarshallerFactory;
 
+import multicast.senseup.awareness.situation.domain.KmoduleForm;
 import multicast.senseup.awareness.situation.domain.PomForm;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryLoader;
@@ -73,7 +74,7 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
             String sessionName = (String) objectInputStream.readObject();
             ReleaseId releaseId = (ReleaseId) objectInputStream.readObject();
             PomForm pom = (PomForm) objectInputStream.readObject();
-            String kmodule = (String) objectInputStream.readObject();
+            KmoduleForm kmodule = (KmoduleForm) objectInputStream.readObject();
             int size = objectInputStream.readInt();
 
             workingMemory = new WorkingMemory(pkgName, baseName, sessionName);

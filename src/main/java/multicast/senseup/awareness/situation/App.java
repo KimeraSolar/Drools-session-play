@@ -189,7 +189,6 @@ public class App
                     switch(toDelete){
                         case "fact":
                         case "facts":
-                            // TODO: delete facts
                             System.out.println("Escreva o hashcode do fato a ser deletado:");
                             String hashCodeToDelete = user_input.nextLine();
                             if(hashCodeToDelete.toLowerCase().contains("abort")) break;
@@ -197,7 +196,6 @@ public class App
                             break;
                         case "rule":
                         case "rules":
-                            //TODO: delete rules
                             System.out.println("Escreva a regra a ser removida");
                             String ruleToDelete = user_input.nextLine();
                             if(ruleToDelete.toLowerCase().contains("abort")) break;

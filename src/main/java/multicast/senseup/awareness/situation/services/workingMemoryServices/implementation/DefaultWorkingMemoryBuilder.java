@@ -1,5 +1,6 @@
 package multicast.senseup.awareness.situation.services.workingMemoryServices.implementation;
 
+import org.json.JSONObject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -10,7 +11,10 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 
+import multicast.senseup.awareness.situation.domain.KmoduleForm;
 import multicast.senseup.awareness.situation.domain.PomForm;
+import multicast.senseup.awareness.situation.domain.RuleForm;
+import multicast.senseup.awareness.situation.domain.RulePackage;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
 
@@ -164,15 +168,27 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
 
         @Override
         public String getSourceCode() {
-            StringBuilder sourceBuilder = new StringBuilder();
-            sourceBuilder
-                .append("package ").append( getPkgName() ).append(";\n")
-                .append("\n")
+            RulePackage rulePackage = new RulePackage();
+            rulePackage.setPkgName( getPkgName() );
+
+            JSONObject jsonMessageDeclaration = new JSONObject();
+            jsonMessageDeclaration.put("ruleName", "Message Declaration");
+
+            StringBuilder messageDeclarationBuilder = new StringBuilder();
+            messageDeclarationBuilder
                 .append("declare Message\n")
                 .append("    message : String\n")
                 .append("    status : Integer\n")
-                .append("end\n")
-                .append("\n")
+                .append("end\n");
+            jsonMessageDeclaration.put("source", messageDeclarationBuilder.toString());
+            RuleForm messageDeclaration = RuleForm.parseJson( jsonMessageDeclaration.toString() );
+            rulePackage.addRule(messageDeclaration);
+
+            JSONObject jsonRuleDeclaration = new JSONObject();
+            jsonRuleDeclaration.put("ruleName", "Rule Declaration");
+
+            StringBuilder ruleDeclarationBuilder = new StringBuilder();
+            ruleDeclarationBuilder
                 .append("rule \"Hello World\"\n")
                 .append("    dialect \"mvel\"\n")
                 .append("    when\n")
@@ -181,11 +197,16 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
                 .append("        modify ( m ) { message = \"Goodbye cruel world\",\n")
                 .append("                    status = 2 };\n")
                 .append("end\n");
-            return sourceBuilder.toString();
+            jsonRuleDeclaration.put("source", ruleDeclarationBuilder.toString());
+            RuleForm ruleDeclaration = RuleForm.parseJson(jsonRuleDeclaration.toString());
+            rulePackage.addRule(ruleDeclaration);
+
+            return rulePackage.toString();
         }
 
         @Override
-        public String getConfigurations() {
+        public KmoduleForm getConfigurations() {
+            KmoduleForm kieKmoduleForm = new KmoduleForm();
             KieServices kieServices = KieServices.Factory.get();
             KieModuleModel kieModule = kieServices.newKieModuleModel();
             
@@ -197,7 +218,7 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
             KieSessionModel sessionModel = defaultBase.newKieSessionModel(getDefaultSessionName());
             sessionModel = sessionModel.setDefault(true);
 
-            return kieModule.toXML();
+            return kieKmoduleForm;
         }
 
         public String getLog4jDotProperties(){
@@ -235,9 +256,9 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
             .append(configurations.getPkgName().replace(".", "/"))
             .append("/rules.drl");
         String fileName = fileNameBuilder.toString();
-        
+
         kieFileSystem = kieFileSystem.write(fileName, configurations.getSourceCode());
-        kieFileSystem = kieFileSystem.writeKModuleXML(configurations.getConfigurations());
+        kieFileSystem = kieFileSystem.writeKModuleXML(configurations.getConfigurations().toString());
         kieFileSystem = kieFileSystem.writePomXML(configurations.getPom().toString());
 
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
