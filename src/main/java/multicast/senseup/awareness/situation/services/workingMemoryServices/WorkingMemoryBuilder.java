@@ -2,13 +2,14 @@ package multicast.senseup.awareness.situation.services.workingMemoryServices;
 
 import multicast.senseup.awareness.situation.domain.KmoduleForm;
 import multicast.senseup.awareness.situation.domain.PomForm;
+import multicast.senseup.awareness.situation.domain.RulePackage;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 
 public interface WorkingMemoryBuilder {
     public interface WorkingMemoryConfigurations{
         public PomForm getPom();
 
-        public String getSourceCode();
+        public RulePackage getSourceCode();
 
         public KmoduleForm getConfigurations();
 

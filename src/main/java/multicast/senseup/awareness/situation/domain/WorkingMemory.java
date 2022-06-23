@@ -15,7 +15,7 @@ public class WorkingMemory implements Serializable {
     public KieSession kieSession;
     public KieBase kieBase;
 
-    public Map<String, String> files = new HashMap<>();
+    public Map<String, RulePackage> files = new HashMap<>();
     public List<String> packages = new ArrayList<>();
     public PomForm pom;
     public KmoduleForm kmodule;
@@ -42,7 +42,7 @@ public class WorkingMemory implements Serializable {
         this.sessionName = sessionName;
     }
 
-    public void setFiles(Map<String,String> files) {
+    public void setFiles(Map<String, RulePackage> files) {
         this.files = files;
     }
 
@@ -156,11 +156,11 @@ public class WorkingMemory implements Serializable {
         return this;
     }
 
-    public Map<String, String> getFiles(){
+    public Map<String, RulePackage> getFiles(){
         return this.files;
     }
 
-    public void addFile(String fileName, String fileContent){
+    public void addFile(String fileName, RulePackage fileContent){
         this.files.put(fileName, fileContent);
     }
 

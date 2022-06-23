@@ -1,11 +1,12 @@
 package multicast.senseup.awareness.situation.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class RulePackage {
+public class RulePackage implements Serializable{
 
     Map<String, RuleForm> rules = new TreeMap<>();
 

@@ -166,9 +166,10 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
         }
 
         @Override
-        public String getSourceCode() {
+        public RulePackage getSourceCode() {
             RulePackage rulePackage = new RulePackage();
             rulePackage.setPkgName( getPkgName() );
+            rulePackage.setFileName("defaultRules");
 
             JSONObject jsonMessageDeclaration = new JSONObject();
             jsonMessageDeclaration.put("ruleName", "Message Declaration");
@@ -200,7 +201,7 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
             RuleForm ruleDeclaration = RuleForm.parseJson(jsonRuleDeclaration.toString());
             rulePackage.addRule(ruleDeclaration);
 
-            return rulePackage.toString();
+            return rulePackage;
         }
 
         @Override
@@ -255,10 +256,10 @@ public class DefaultWorkingMemoryBuilder implements WorkingMemoryBuilder {
         fileNameBuilder
             .append("src/main/resources/")
             .append(configurations.getPkgName().replace(".", "/"))
-            .append("/rules.drl");
+            .append("/defaultRules.drl");
         String fileName = fileNameBuilder.toString();
 
-        kieFileSystem = kieFileSystem.write(fileName, configurations.getSourceCode());
+        kieFileSystem = kieFileSystem.write(fileName, configurations.getSourceCode().getSourceCode());
         kieFileSystem = kieFileSystem.writeKModuleXML(configurations.getConfigurations().toString());
         kieFileSystem = kieFileSystem.writePomXML(configurations.getPom().toString());
 

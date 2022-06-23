@@ -21,6 +21,7 @@ import org.kie.internal.marshalling.MarshallerFactory;
 
 import multicast.senseup.awareness.situation.domain.KmoduleForm;
 import multicast.senseup.awareness.situation.domain.PomForm;
+import multicast.senseup.awareness.situation.domain.RulePackage;
 import multicast.senseup.awareness.situation.domain.WorkingMemory;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryLoader;
 
@@ -80,7 +81,7 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
             workingMemory = new WorkingMemory(pkgName, baseName, sessionName);
             for(int i = 0; i < size; i++){
                 String fileName = (String) objectInputStream.readObject();
-                String fileContent = (String) objectInputStream.readObject();
+                RulePackage fileContent = (RulePackage) objectInputStream.readObject();
                 workingMemory.addFile(fileName, fileContent);
             }
 
@@ -95,7 +96,7 @@ public class WorkingMemoryLoaderImpl implements WorkingMemoryLoader{
             kieFileSystem.writeKModuleXML(workingMemory.getKmodule());
             
             for(var file : workingMemory.getFiles().entrySet()){
-                kieFileSystem.write(file.getKey(), file.getValue());
+                kieFileSystem.write(file.getKey(), file.getValue().getSourceCode());
             }
 
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);

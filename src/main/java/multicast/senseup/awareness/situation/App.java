@@ -121,6 +121,7 @@ public class App
                             System.out.println("Escreva o fato a ser inserido em formato Json:");
                             /* Testes: 
                             *  { typeName : "Message", properties : "{ status : 1, message : \"Hello World\" }" }
+                            *  { typeName : "Message", properties : "{ status : 1, message : \"Good morning World\" }" }
                             *  { typeName : "Message", properties : "{ status : 3, message : \"Não vai mudar\" }" }
                             *  { typeName : "Message", properties : "{ status : 4, message : \"Hello World\" }" } 
                             */
@@ -166,6 +167,7 @@ public class App
                             *  { ruleName : "Ohayo sekai", source : "rule \"Ohayo sekai\"\n dialect \"mvel\" \n when\n m : Message( status == 2, $message : message )\n then\n modify ( m ) { message = \"Ohayo sekai Good morning World\", \n status = 3 }; \n end\n" }
                             *  { ruleName : "GURU", source: "rule \"GURU\"\n dialect \"mvel\" \n when\n m : Message( status == 4, $message : message )\n then\n modify ( m ) { message = \"Ah Wanderer Never Ending\", \n status = 3 }; \n end\n"}
                             *  { ruleName : "Naruto OP 2", source: "rule \"Haruka Kanata\"\n dialect \"mvel\" \n when\n m : Message( status == 1, $message : message )\n then\n modify ( m ) { message = \"fumikomu ze akuseru / kakehiki wa nai sa, sōda yo / yoru o nukeru\", \n status = 3 }; \n end\n"}
+                            *  { ruleName : "Hello World", source: "rule \"Hello World\"\n dialect \"mvel\" \n when\n m : Message( status == 1, $message : message )\n then\n modify ( m ) { message = \"Hello World\", \n status = 3 }; \n end\n"}
                             */
                             String jsonString = user_input.nextLine();
                             while(!jsonString.toLowerCase().contains("end-rules")){

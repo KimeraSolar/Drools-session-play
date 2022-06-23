@@ -1,8 +1,10 @@
 package multicast.senseup.awareness.situation.domain;
 
+import java.io.Serializable;
+
 import org.json.JSONObject;
 
-public class RuleForm {
+public class RuleForm implements Serializable {
 
     String ruleName;
 

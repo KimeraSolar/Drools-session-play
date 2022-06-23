@@ -35,12 +35,12 @@ public class PackageBuilderImpl implements PackageBuilder{
             workingMemory.getFiles().remove(fileName);
         }
 
-        workingMemory.addFile(fileName, rulePackage.getSourceCode());
+        workingMemory.addFile(fileName, rulePackage);
 
         kieFileSystem.writePomXML(workingMemory.getPom());
         kieFileSystem.writeKModuleXML(workingMemory.getKmodule());
         for(var file : workingMemory.getFiles().entrySet()){
-            kieFileSystem.write(file.getKey(), file.getValue());
+            kieFileSystem.write(file.getKey(), file.getValue().getSourceCode());
         }
 
         KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
