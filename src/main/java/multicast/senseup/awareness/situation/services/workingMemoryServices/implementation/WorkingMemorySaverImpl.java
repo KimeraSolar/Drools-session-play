@@ -60,7 +60,6 @@ public class WorkingMemorySaverImpl implements WorkingMemorySaver{
                 objectOutputStream.writeObject(file.getValue());
             }
 
-            objectOutputStream.writeObject(workingMemory.getKieBase());
             objectOutputStream.writeObject(workingMemory.getKieSession().getSessionConfiguration());
 			MarshallerFactory.newMarshaller(workingMemory.getKieBase()).marshall(objectOutputStream, workingMemory.getKieSession());
             objectOutputStream.close();
