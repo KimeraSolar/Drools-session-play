@@ -1,9 +1,12 @@
 package multicast.senseup.awareness.situation;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser.statement_return;
 import org.kie.api.definition.rule.Rule;
 
 import multicast.senseup.awareness.situation.domain.Fact;
@@ -25,12 +28,14 @@ import multicast.senseup.awareness.situation.services.factServices.implementatio
 import multicast.senseup.awareness.situation.services.factServices.implementation.FactsListerImpl;
 import multicast.senseup.awareness.situation.services.packageServices.PackageBuilder;
 import multicast.senseup.awareness.situation.services.packageServices.RuleDeleter;
+import multicast.senseup.awareness.situation.services.packageServices.RuleFileReader;
 import multicast.senseup.awareness.situation.services.packageServices.RulesLister;
 import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyPackageBuilder;
 import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyRuleDeleter;
 import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyRulesLister;
 import multicast.senseup.awareness.situation.services.packageServices.implementation.PackageBuilderImpl;
 import multicast.senseup.awareness.situation.services.packageServices.implementation.RuleDeleterImpl;
+import multicast.senseup.awareness.situation.services.packageServices.implementation.RuleFileReaderImpl;
 import multicast.senseup.awareness.situation.services.packageServices.implementation.RulesListerImpl;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
 import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryLoader;
@@ -85,6 +90,22 @@ public class App
     }
 
     public static void main( String[] args ){
+        //app_main(args);
+        RuleFileReader ruleFileReader = new RuleFileReaderImpl();
+        try {
+            RulePackage rulePackage = ruleFileReader.readRuleFile("monitoramento-vacinas-backend/src/main/resources/rules/Sample.drl");
+            System.out.println(rulePackage.getFileName());
+            System.out.println(rulePackage.toString());
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static void app_main( String[] args ){
 
         // Configura e inicializa sessão do Drools
         workingMemoryBuilder = new DefaultWorkingMemoryBuilder();

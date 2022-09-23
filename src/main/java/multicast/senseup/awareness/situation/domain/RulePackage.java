@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 public class RulePackage implements Serializable{
 
-    Map<String, RuleForm> rules = new TreeMap<>();
+    List <RuleForm> rules = new ArrayList<>();
 
     List<String> includes = new ArrayList<>();
 
@@ -17,10 +17,14 @@ public class RulePackage implements Serializable{
     String fileName;
 
     public Map<String, RuleForm> getRules() {
-        return this.rules;
+        Map<String, RuleForm> rulesMap = new TreeMap<>();
+        for(RuleForm rule : this.rules){
+            rulesMap.put(rule.getRuleName(), rule);
+        } 
+        return rulesMap;
     }
 
-    public void setRules(Map<String, RuleForm> rules) {
+    public void setRules(List <RuleForm> rules) {
         this.rules = rules;
     }
 
@@ -41,11 +45,16 @@ public class RulePackage implements Serializable{
     }
 
     public void addRule(RuleForm ruleForm){
-        rules.put(ruleForm.getRuleName(), ruleForm);
+        rules.add(ruleForm);
     }
 
     public void deleteRule(String ruleName){
-        rules.remove(ruleName);
+        for(RuleForm rule : this.rules){
+            if(ruleName.equals(rule.getRuleName())){ 
+                this.rules.remove(rule);
+                break;
+            }
+        }
     }
 
     public List<String> getIncludes() {
@@ -75,7 +84,7 @@ public class RulePackage implements Serializable{
         }
         sourceCodeBuilder
             .append("\n");
-        for(RuleForm ruleForm : getRules().values()){
+        for(RuleForm ruleForm : this.rules){
             sourceCodeBuilder
                 .append(ruleForm.getSourceCode())
                 .append("\n");
