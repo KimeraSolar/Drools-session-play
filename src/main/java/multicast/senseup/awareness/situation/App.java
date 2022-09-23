@@ -6,50 +6,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser.statement_return;
 import org.kie.api.definition.rule.Rule;
 
+import multicast.senseup.awareness.situation.configurations.RuleEngineConfiguration;
+import multicast.senseup.awareness.situation.configurations.implementation.DroolsRuleEngineConfiguration;
 import multicast.senseup.awareness.situation.domain.Fact;
 import multicast.senseup.awareness.situation.domain.FactForm;
 import multicast.senseup.awareness.situation.domain.RuleForm;
 import multicast.senseup.awareness.situation.domain.RulePackage;
-import multicast.senseup.awareness.situation.domain.WorkingMemory;
-import multicast.senseup.awareness.situation.services.factServices.FactDeleter;
-import multicast.senseup.awareness.situation.services.factServices.FactFinder;
-import multicast.senseup.awareness.situation.services.factServices.FactInserter;
-import multicast.senseup.awareness.situation.services.factServices.FactsLister;
-import multicast.senseup.awareness.situation.services.factServices.dummies.DummyFactDeleter;
-import multicast.senseup.awareness.situation.services.factServices.dummies.DummyFactFinder;
-import multicast.senseup.awareness.situation.services.factServices.dummies.DummyFactInserter;
-import multicast.senseup.awareness.situation.services.factServices.dummies.DummyFactsLister;
-import multicast.senseup.awareness.situation.services.factServices.implementation.FactDeleterImpl;
-import multicast.senseup.awareness.situation.services.factServices.implementation.FactFinderImpl;
-import multicast.senseup.awareness.situation.services.factServices.implementation.FactInserterImpl;
-import multicast.senseup.awareness.situation.services.factServices.implementation.FactsListerImpl;
-import multicast.senseup.awareness.situation.services.packageServices.PackageBuilder;
-import multicast.senseup.awareness.situation.services.packageServices.RuleDeleter;
 import multicast.senseup.awareness.situation.services.packageServices.RuleFileReader;
-import multicast.senseup.awareness.situation.services.packageServices.RulesLister;
-import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyPackageBuilder;
-import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyRuleDeleter;
-import multicast.senseup.awareness.situation.services.packageServices.dummies.DummyRulesLister;
-import multicast.senseup.awareness.situation.services.packageServices.implementation.PackageBuilderImpl;
-import multicast.senseup.awareness.situation.services.packageServices.implementation.RuleDeleterImpl;
 import multicast.senseup.awareness.situation.services.packageServices.implementation.RuleFileReaderImpl;
-import multicast.senseup.awareness.situation.services.packageServices.implementation.RulesListerImpl;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryBuilder;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemoryLoader;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.WorkingMemorySaver;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemoryBuilder;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemoryLoader;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.dummies.DummyWorkingMemorySaver;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.DefaultWorkingMemoryBuilder;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemoryLoaderImpl;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.WorkingMemorySaverImpl;
-import multicast.senseup.awareness.situation.services.workingMemoryServices.implementation.DefaultWorkingMemoryBuilder.WorkingMemoryConfigurationsImpl;
+import multicast.senseup.awareness.situation.services.ruleEngineServices.RuleEngineManagement;
+import multicast.senseup.awareness.situation.services.ruleEngineServices.implementation.DroolsRuleEngineManagement;
 
 public class App 
 {
+
     static final String pkgName = "multicast.senseup.awareness.situation";
     static final String baseName = "rules";
     static final String sessionName = ".session";
@@ -57,29 +29,7 @@ public class App
     static String fileName = "workingMemory";
     static String fileExtension = ".save";
 
-    static WorkingMemory workingMemory = null;
-
-    static FactFinder factFinder = new DummyFactFinder();
-    static FactInserter factInserter = new DummyFactInserter();
-    static FactDeleter factDeleter = new DummyFactDeleter();
-    static FactsLister factsLister = new DummyFactsLister();
-    static RuleDeleter ruleDeleter = new DummyRuleDeleter();
-    static RulesLister rulesLister = new DummyRulesLister();
-    static WorkingMemorySaver workingMemorySaver = new DummyWorkingMemorySaver();
-    static WorkingMemoryLoader workingMemoryLoader = new DummyWorkingMemoryLoader();
-    static WorkingMemoryBuilder workingMemoryBuilder = new DummyWorkingMemoryBuilder();
-    static PackageBuilder packageBuilder = new DummyPackageBuilder();
-    
-
-    public static void setWorkingMemory(WorkingMemory newWorkingMemory){
-        workingMemory = newWorkingMemory;
-        factFinder = new FactFinderImpl(workingMemory);
-        factInserter = new FactInserterImpl(workingMemory);
-        factsLister = new FactsListerImpl(workingMemory);
-        rulesLister = new RulesListerImpl(workingMemory);
-        factDeleter = new FactDeleterImpl(workingMemory);
-        ruleDeleter = new RuleDeleterImpl(workingMemory);
-    }
+    static RuleEngineManagement ruleEngineManagement = new DroolsRuleEngineManagement();
 
     public static void getFileName(Scanner user_input){
 
@@ -90,7 +40,11 @@ public class App
     }
 
     public static void main( String[] args ){
-        //app_main(args);
+        app_main(args);
+        //file_reader_test(args);
+    }
+
+    public static void file_reader_test( String[] args ){
         RuleFileReader ruleFileReader = new RuleFileReaderImpl();
         try {
             RulePackage rulePackage = ruleFileReader.readRuleFile("monitoramento-vacinas-backend/src/main/resources/rules/Sample.drl");
@@ -107,21 +61,21 @@ public class App
 
     public static void app_main( String[] args ){
 
-        // Configura e inicializa sessão do Drools
-        workingMemoryBuilder = new DefaultWorkingMemoryBuilder();
-        workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
-        workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
-        packageBuilder = new PackageBuilderImpl();
+        RuleEngineConfiguration ruleEngineConfiguration = new DroolsRuleEngineConfiguration();
+
+        ruleEngineConfiguration.setPkgName(pkgName);
+        ruleEngineConfiguration.setRulesBaseName(baseName);
+        ruleEngineConfiguration.setSessionName(sessionName);
+
+        ruleEngineManagement.setConfigurations(ruleEngineConfiguration);
 
         File f = new File(fileName + fileExtension);
         if(f.exists() && !f.isDirectory()) {
             // Carrega sessão previamente salva no arquivo workingMemory.save
-            setWorkingMemory(workingMemoryLoader.load(workingMemory)); 
+            ruleEngineManagement.loadWorkingMemory(f.getName());
         } else {
             // Cria sessão do zero caso não exista o arquivo workingMemory.save
-            setWorkingMemory(workingMemoryBuilder.build(
-                new WorkingMemoryConfigurationsImpl(pkgName, baseName)
-            ));
+            ruleEngineManagement.resetRuleEngine();
         }
 
         Scanner user_input = new Scanner(System.in);
@@ -150,7 +104,7 @@ public class App
                             if(formString.toLowerCase().contains("abort")) break;
                             try{
                                 FactForm factForm = FactForm.parseJson(formString);
-                                System.out.println(factInserter.insert(factForm));
+                                System.out.println(ruleEngineManagement.insertFact(factForm));
                             }catch(Exception e){
                                 e.printStackTrace();
                             }
@@ -201,7 +155,7 @@ public class App
                                 jsonString = user_input.nextLine();
                             }
                             
-                            packageBuilder.build(workingMemory, rulePackage);
+                            ruleEngineManagement.insertPackage(rulePackage);;
                         break;
                     }
                 break;
@@ -210,7 +164,7 @@ public class App
                     System.out.println("Escreva o hashcode do fato a ser procurado:");
                     String hashCodeToFind = user_input.nextLine();
                     if(hashCodeToFind.toLowerCase().contains("abort")) break;
-                    System.out.println(factFinder.find(hashCodeToFind));
+                    System.out.println(ruleEngineManagement.findFact(hashCodeToFind));
                     break;
                 
                 case "delete":
@@ -222,7 +176,7 @@ public class App
                             System.out.println("Escreva o hashcode do fato a ser deletado:");
                             String hashCodeToDelete = user_input.nextLine();
                             if(hashCodeToDelete.toLowerCase().contains("abort")) break;
-                            factDeleter.delete(hashCodeToDelete);
+                            ruleEngineManagement.deleteFact(hashCodeToDelete);
                             break;
                         case "rule":
                         case "rules":
@@ -232,7 +186,7 @@ public class App
                             System.out.println("Escreva a regra a ser removida");
                             String ruleToDelete = user_input.nextLine();
                             if(ruleToDelete.toLowerCase().contains("abort")) break;
-                            ruleDeleter.delete(rulePkg, ruleToDelete);
+                            ruleEngineManagement.deleteRule(rulePkg, ruleToDelete);
                             break;
                     }
                     break;
@@ -244,14 +198,14 @@ public class App
                     switch (toList.toLowerCase()){
                         case "facts":
                         case "fact":
-                            List<Fact> factsList = factsLister.list();
+                            List<Fact> factsList = ruleEngineManagement.listFacts();
                             for (Fact fact : factsList){
                                 System.out.println(fact);
                             }
                         break;
                         case "rules":
                         case "rule":
-                            List<Rule> rulesList = rulesLister.list();
+                            List<Rule> rulesList = ruleEngineManagement.listRules();
                             for(Rule rule : rulesList){
                                 System.out.println(rule);
                             }
@@ -262,30 +216,24 @@ public class App
                 case "save":
                     System.out.println("Escreva o nome do arquivo:");
                     getFileName(user_input);
-                    workingMemorySaver = new WorkingMemorySaverImpl(fileName, fileExtension);
-                    workingMemorySaver.save(workingMemory);
+                    ruleEngineManagement.saveWorkingMemory(fileName);
                     break;
 
                 case "load":
                     System.out.println("Escreva o nome do arquivo:");
                     getFileName(user_input);
-                    workingMemoryLoader = new WorkingMemoryLoaderImpl(fileName, fileExtension);
-                    setWorkingMemory(workingMemoryLoader.load(workingMemory));
+                    ruleEngineManagement.loadWorkingMemory(fileName);
                     break;
 
                 case "reset":
-                    if(workingMemory != null) workingMemory.disposeSession();
-                    setWorkingMemory(workingMemoryBuilder.build(
-                        new WorkingMemoryConfigurationsImpl(pkgName, baseName)
-                    ));
+                    ruleEngineManagement.resetRuleEngine();
                     break;
             }
-            workingMemory.getKieSession().fireAllRules();
+            ruleEngineManagement.fireAllRules();
         } while (!words[0].toLowerCase().contains("end"));
 
         // Finaliza sessão do Scene
-        workingMemory.disposeSession();
-        setWorkingMemory(null);
+         ruleEngineManagement.clear();
 
         // Fecha user_input
         user_input.close();

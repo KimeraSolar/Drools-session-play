@@ -12,6 +12,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 public class WorkingMemory implements Serializable {
+    
+    private boolean isRunning = false;
     public KieSession kieSession;
     public KieBase kieBase;
 
@@ -149,6 +151,7 @@ public class WorkingMemory implements Serializable {
     }
 
     public WorkingMemory disposeSession(){
+        if(isRunning) this.stop();
         if(this.getKieSession() != null){
             this.getKieSession().dispose();
             this.setKieSession(null);
@@ -166,6 +169,20 @@ public class WorkingMemory implements Serializable {
 
     public void deleteFile(String fileName){
         this.files.remove(fileName);
+    }
+
+    public void run(){
+        if (!isRunning) this.kieSession.fireUntilHalt();
+        isRunning = true;
+    }
+
+    public void stop(){
+        if (isRunning) this.kieSession.halt();
+        isRunning = false;
+    }
+
+    public boolean isRunning(){
+        return isRunning;
     }
 
 }
