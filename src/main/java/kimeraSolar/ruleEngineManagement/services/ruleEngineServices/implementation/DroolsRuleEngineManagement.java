@@ -52,7 +52,11 @@ public class DroolsRuleEngineManagement implements RuleEngineManagement{
     private RulesLister rulesLister;
 
     public DroolsRuleEngineManagement(){
-        workingMemoryBuilder = new DefaultWorkingMemoryBuilder();
+        this.setBuilder(new DefaultWorkingMemoryBuilder());
+    }
+
+    public void setBuilder(WorkingMemoryBuilder workingMemoryBuilder){
+        this.workingMemoryBuilder = workingMemoryBuilder;
     }
 
     private void setWorkingMemory(WorkingMemory workingMemory){
