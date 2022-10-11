@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 
 import kimeraSolar.ruleEngineManagement.configurations.RuleEngineConfiguration;
 import kimeraSolar.ruleEngineManagement.configurations.implementation.DroolsRuleEngineConfiguration;
@@ -76,6 +77,19 @@ public class App
         } else {
             // Cria sessão do zero caso não exista o arquivo workingMemory.save
             ruleEngineManagement.resetRuleEngine();
+        }
+       
+        try {
+            System.out.println("Inserindo fato na memoria");
+            FactType messageType = ruleEngineManagement.getFactType(pkgName, "Message");
+            Object messageObject = messageType.newInstance();
+            messageType.set(messageObject, "status", 3);
+            messageType.set(messageObject, "message", "Nova mensagem");
+            ruleEngineManagement.insertFact(messageObject);
+        } catch (InstantiationException e1) {
+            e1.printStackTrace();
+        } catch (IllegalAccessException e1) {
+            e1.printStackTrace();
         }
 
         Scanner user_input = new Scanner(System.in);

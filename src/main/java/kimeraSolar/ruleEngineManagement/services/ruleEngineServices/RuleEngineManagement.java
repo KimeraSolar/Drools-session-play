@@ -3,6 +3,7 @@ package kimeraSolar.ruleEngineManagement.services.ruleEngineServices;
 import java.util.List;
 
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 
 import kimeraSolar.ruleEngineManagement.configurations.RuleEngineConfiguration;
 import kimeraSolar.ruleEngineManagement.domain.Fact;
@@ -34,6 +35,8 @@ public interface RuleEngineManagement {
     
     public String insertFact(FactForm factForm);
 
+    public String insertFact(Object factObj);
+
     public void deleteFact(String FactHash);
 
     public void insertPackage(RulePackage rulePackage);
@@ -51,4 +54,6 @@ public interface RuleEngineManagement {
     public void fireAllRules();
 
     public void clear();
+
+    public FactType getFactType(String pkgName, String typeName);
 }

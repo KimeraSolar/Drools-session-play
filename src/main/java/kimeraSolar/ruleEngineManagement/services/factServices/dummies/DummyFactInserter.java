@@ -11,5 +11,12 @@ public class DummyFactInserter implements FactInserter{
         System.out.println(factForm);
         return "dummy.factHash@1";
     }
+
+    @Override
+    public String insert(Object factObj) {
+        System.out.println("Inserimos seu fato na working memory:");
+        System.out.println(factObj);
+        return "dummy.factHash@1";
+    }
     
 }

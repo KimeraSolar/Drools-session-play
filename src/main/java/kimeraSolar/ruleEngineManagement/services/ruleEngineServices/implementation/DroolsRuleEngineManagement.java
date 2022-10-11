@@ -3,6 +3,7 @@ package kimeraSolar.ruleEngineManagement.services.ruleEngineServices.implementat
 import java.util.List;
 
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 
 import kimeraSolar.ruleEngineManagement.configurations.RuleEngineConfiguration;
 import kimeraSolar.ruleEngineManagement.domain.Fact;
@@ -205,6 +206,17 @@ public class DroolsRuleEngineManagement implements RuleEngineManagement{
     public void clear(){
         if(workingMemory != null) workingMemory.disposeSession();
         setWorkingMemory(null);
+    }
+
+    @Override
+    public FactType getFactType(String pkgName, String typeName) {
+        FactType factType = workingMemory.getKieBase().getFactType(pkgName, typeName);
+        return factType;
+    }
+
+    @Override
+    public String insertFact(Object factObj) {
+        return factInserter.insert(factObj);
     }
     
 }

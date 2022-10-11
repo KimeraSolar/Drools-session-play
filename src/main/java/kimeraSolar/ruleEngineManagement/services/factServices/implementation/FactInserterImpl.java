@@ -26,9 +26,7 @@ public class FactInserterImpl implements FactInserter {
         
         try {
             obj = instantiateFact(factForm);
-            workingMemory.getKieSession().insert(obj);
-            String hashString = FactHashGenerator.generateFactHash(workingMemory.getPkgName(), factForm.getTypeName(), obj);
-            return hashString;
+            return insert(obj);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,6 +44,13 @@ public class FactInserterImpl implements FactInserter {
         });
 
         return obj;
+    }
+
+    @Override
+    public String insert(Object factObj) {
+        workingMemory.getKieSession().insert(factObj);
+        String hashString = FactHashGenerator.generateFactHash(workingMemory.getPkgName(), factObj.getClass().getSimpleName(), factObj);
+        return hashString;
     }
     
 }
