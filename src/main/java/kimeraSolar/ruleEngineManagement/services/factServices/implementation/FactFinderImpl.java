@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.rule.FactHandle;
 
 import kimeraSolar.ruleEngineManagement.domain.Fact;
 import kimeraSolar.ruleEngineManagement.domain.WorkingMemory;
@@ -35,8 +36,9 @@ public class FactFinderImpl implements FactFinder{
             }
         );
         Object fact = objects.toArray()[0];
+        FactHandle factHandle = workingMemory.getKieSession().getFactHandle(fact);
         
-        return new Fact(factHash, factType, fact);
+        return new Fact(factHash, factHandle, factType, fact);
     }
     
 }

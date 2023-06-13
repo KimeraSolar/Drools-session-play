@@ -2,9 +2,11 @@
 package kimeraSolar.ruleEngineManagement.domain;
 
 import org.kie.api.definition.type.FactType;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class Fact {
     FactType factType;
+    FactHandle factHandle;
     String factHash;
     Object fact;
 
@@ -12,6 +14,13 @@ public class Fact {
 
     public Fact(String factHash, FactType factType, Object fact) {
         this.factHash = factHash;
+        this.factType = factType;
+        this.fact = fact;
+    }
+
+    public Fact(String factHash, FactHandle factHandle, FactType factType, Object fact) {
+        this.factHash = factHash;
+        this.factHandle = factHandle;
         this.factType = factType;
         this.fact = fact;
     }
@@ -38,6 +47,14 @@ public class Fact {
 
     public void setFactHash(String factHash) {
         this.factHash = factHash;
+    }
+
+    public FactHandle getFactHandle(){
+        return this.factHandle;
+    }
+
+    public void setFactHandle(FactHandle factHandle){
+        this.factHandle = factHandle;
     }
 
     @Override
