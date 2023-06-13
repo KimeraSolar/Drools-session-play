@@ -159,13 +159,13 @@ public class DroolsRuleEngineManagement implements RuleEngineManagement{
     @Override
     public void deletePackage(RulePackage rulePackage) {
         // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException("Unimplemented method 'getFactHandle'");
     }
 
     @Override
     public void deletePackage(String packageName) {
         // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException("Unimplemented method 'getFactHandle'");        
     }
 
     @Override
@@ -217,6 +217,11 @@ public class DroolsRuleEngineManagement implements RuleEngineManagement{
     @Override
     public String insertFact(Object factObj) {
         return factInserter.insert(factObj);
+    }
+
+    @Override
+    public WorkingMemory getWorkingMemory() {
+        return this.workingMemory;
     }
     
 }

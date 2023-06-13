@@ -10,6 +10,7 @@ import kimeraSolar.ruleEngineManagement.domain.Fact;
 import kimeraSolar.ruleEngineManagement.domain.FactForm;
 import kimeraSolar.ruleEngineManagement.domain.RuleForm;
 import kimeraSolar.ruleEngineManagement.domain.RulePackage;
+import kimeraSolar.ruleEngineManagement.domain.WorkingMemory;
 
 public interface RuleEngineManagement {
     
@@ -56,4 +57,6 @@ public interface RuleEngineManagement {
     public void clear();
 
     public FactType getFactType(String pkgName, String typeName);
+
+    public WorkingMemory getWorkingMemory();
 }
