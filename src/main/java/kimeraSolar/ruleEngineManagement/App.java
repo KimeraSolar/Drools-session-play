@@ -169,7 +169,7 @@ public class App
                                 jsonString = user_input.nextLine();
                             }
                             
-                            ruleEngineManagement.insertPackage(rulePackage);;
+                            ruleEngineManagement.insertPackage(rulePackage);
                         break;
                     }
                 break;

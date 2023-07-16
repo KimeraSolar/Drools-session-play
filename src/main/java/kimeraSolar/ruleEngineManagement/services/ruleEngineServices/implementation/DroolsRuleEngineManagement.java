@@ -131,14 +131,20 @@ public class DroolsRuleEngineManagement implements RuleEngineManagement{
     }
 
     @Override
-    public void updateRule(String rulePkg, String ruleHash, RuleForm ruleForm) {
-        // TODO Auto-generated method stub
+    public void updateRule(String rulePkg, String ruleName, RuleForm ruleForm) {
+        // boolean wasRunning = isRunning();
+        // stopRuleEngine();
+        // ruleDeleter.delete(rulePkg, ruleName);
+        // RulePackage rulePackage = new RulePackage();
+        // rulePackage.setFileName(ruleName);
+        // rulePackage.addRule(ruleForm);
+        // if(wasRunning) startRuleEngine();
+        throw new UnsupportedOperationException("Unimplemented method 'updateRule'");
     }
 
     @Override
     public String insertFact(FactForm factForm) {
         return factInserter.insert(factForm);
-        
     }
 
     @Override
@@ -159,13 +165,13 @@ public class DroolsRuleEngineManagement implements RuleEngineManagement{
     @Override
     public void deletePackage(RulePackage rulePackage) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFactHandle'");
+        throw new UnsupportedOperationException("Unimplemented method 'deletePackage'");
     }
 
     @Override
     public void deletePackage(String packageName) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFactHandle'");        
+        throw new UnsupportedOperationException("Unimplemented method 'deletePackage'");        
     }
 
     @Override

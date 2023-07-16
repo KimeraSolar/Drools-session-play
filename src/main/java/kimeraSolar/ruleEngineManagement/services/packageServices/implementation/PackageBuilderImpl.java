@@ -3,12 +3,16 @@ package kimeraSolar.ruleEngineManagement.services.packageServices.implementation
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import kimeraSolar.ruleEngineManagement.domain.RulePackage;
 import kimeraSolar.ruleEngineManagement.domain.WorkingMemory;
 import kimeraSolar.ruleEngineManagement.services.packageServices.PackageBuilder;
 
 public class PackageBuilderImpl implements PackageBuilder{
+
+    Logger logger = LoggerFactory.getLogger(PackageBuilderImpl.class);
 
     @Override
     public WorkingMemory build(WorkingMemory workingMemory, RulePackage rulePackage) {
@@ -21,7 +25,7 @@ public class PackageBuilderImpl implements PackageBuilder{
             .append(rulePackage.getFileName())
             .append(".drl");
         String fileName = fileNameBuilder.toString();
-        System.out.println(fileName);
+        logger.info("Package builded in file {}", fileName);
 
         workingMemory.addPackage(rulePackage.getPkgName());
         
